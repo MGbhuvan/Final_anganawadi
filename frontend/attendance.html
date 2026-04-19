@@ -132,7 +132,6 @@
             border-radius: 3px;
         }
 
-        /* Fields row */
         .add-fields {
             display: flex; gap: 1rem;
             align-items: flex-end; flex-wrap: wrap;
@@ -164,7 +163,32 @@
             box-shadow: 0 0 0 3px rgba(168,85,247,0.10);
         }
 
-        .add-field input::placeholder { color: #D1D5DB; }
+        /* STUD ID prefix wrapper */
+        .id-wrapper {
+            display: flex; align-items: center;
+            border: 1.5px solid #E5E7EB; border-radius: 10px;
+            background: #FAFAFA; overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .id-wrapper:focus-within {
+            border-color: var(--purple); background: var(--white);
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.10);
+        }
+
+        .id-prefix {
+            padding: 9px 10px 9px 12px;
+            font-size: 0.88rem; font-weight: 800;
+            color: #581C87; background: #F3E8FF;
+            border-right: 1.5px solid #E5E7EB;
+            white-space: nowrap; user-select: none;
+        }
+
+        .id-wrapper input {
+            border: none; border-radius: 0;
+            background: transparent; box-shadow: none !important;
+            flex: 1;
+        }
 
         .date-wrap {
             display: flex; align-items: center; gap: 10px;
@@ -185,11 +209,7 @@
             color: var(--navy); outline: none;
         }
 
-        /* ── CENTERED ADD BUTTON ── */
-        .add-btn-wrap {
-            display: flex;
-            justify-content: center;
-        }
+        .add-btn-wrap { display: flex; justify-content: center; }
 
         .add-student-btn {
             padding: 10px 40px;
@@ -198,16 +218,13 @@
             font-size: 0.92rem; font-weight: 700;
             font-family: 'Nunito', sans-serif; cursor: pointer;
             box-shadow: 0 4px 14px rgba(168,85,247,0.30);
-            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-            letter-spacing: 0.04em;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
 
         .add-student-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(168,85,247,0.40);
         }
-
-        .add-student-btn:active { transform: translateY(0); }
 
         .add-msg {
             display: none; margin-top: 1rem;
@@ -225,36 +242,24 @@
         }
 
         .table-toolbar {
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 1.1rem 1.6rem;
-            border-bottom: 1px solid #F3F4F6;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.1rem 1.6rem; border-bottom: 1px solid #F3F4F6;
             flex-wrap: wrap; gap: 0.8rem;
         }
 
-        .table-toolbar-title {
-            font-size: 1rem; font-weight: 800; color: var(--navy);
-        }
+        .table-toolbar-title { font-size: 1rem; font-weight: 800; color: var(--navy); }
 
-        .toolbar-right {
-            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-        }
+        .toolbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
         .filter-row { display: flex; gap: 6px; }
 
         .filter-btn {
-            font-size: 0.72rem; padding: 4px 13px;
-            border-radius: 20px; cursor: pointer;
-            font-family: 'Nunito', sans-serif; font-weight: 700;
-            border: 1.5px solid #E5E7EB;
-            background: var(--white); color: #6B7280;
-            transition: all 0.15s;
+            font-size: 0.72rem; padding: 4px 13px; border-radius: 20px;
+            cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700;
+            border: 1.5px solid #E5E7EB; background: var(--white); color: #6B7280;
         }
 
-        .filter-btn.active {
-            background: var(--purple); color: var(--white);
-            border-color: var(--purple);
-        }
+        .filter-btn.active { background: var(--purple); color: var(--white); border-color: var(--purple); }
 
         .date-badge {
             font-size: 0.75rem; font-weight: 700;
@@ -266,9 +271,7 @@
 
         table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
 
-        thead tr {
-            background: linear-gradient(135deg, var(--navy) 0%, #2d1b4e 100%);
-        }
+        thead tr { background: linear-gradient(135deg, var(--navy) 0%, #2d1b4e 100%); }
 
         thead th {
             color: rgba(255,255,255,0.85);
@@ -280,7 +283,7 @@
         tbody tr {
             border-bottom: 1px solid #F9FAFB;
             transition: background 0.15s;
-            animation: rowIn 0.3s ease both;
+            animation: rowIn 0.3s ease;
         }
 
         @keyframes rowIn {
@@ -291,10 +294,7 @@
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: #faf8ff; }
 
-        tbody td {
-            padding: 12px 15px;
-            color: #374151; vertical-align: middle;
-        }
+        tbody td { padding: 12px 15px; color: #374151; vertical-align: middle; }
 
         .stu-id {
             display: inline-block; padding: 3px 9px;
@@ -304,110 +304,100 @@
 
         .stu-name { font-weight: 700; color: var(--navy); }
 
-        /* ── SMALL Pre / Abs BUTTONS ── */
         .att-btns { display: flex; gap: 6px; }
 
         .att-btn {
-            padding: 5px 12px;
-            border-radius: 7px;
+            padding: 5px 12px; border-radius: 7px;
             font-size: 0.78rem; font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            cursor: pointer;
-            border: 1.5px solid transparent;
-            transition: all 0.18s;
-            letter-spacing: 0.03em;
+            font-family: 'Nunito', sans-serif; cursor: pointer;
+            border: 1.5px solid transparent; transition: all 0.18s;
         }
 
-        .att-btn.pre {
-            background: #EAF3DE; color: #27500A;
-            border-color: #C0DD97;
+        .att-btn.pre { background: #EAF3DE; color: #27500A; border-color: #C0DD97; }
+        .att-btn.abs { background: #FCEBEB; color: #791F1F; border-color: #F7C1C1; }
+
+        .att-btn.pre.active { background: var(--green); color: var(--white); border-color: var(--green); }
+        .att-btn.abs.active { background: #E24B4A; color: var(--white); border-color: #E24B4A; }
+
+        .table-card {
+            background: var(--white); border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
         }
 
-        .att-btn.abs {
-            background: #FCEBEB; color: #791F1F;
-            border-color: #F7C1C1;
+        .table-toolbar {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 1.6rem;
+            border-bottom: 1px solid #F3F4F6;
+            flex-wrap: wrap; gap: 0.8rem;
         }
 
-        .att-btn.pre.active {
-            background: var(--green); color: var(--white);
-            border-color: var(--green);
-            box-shadow: 0 2px 8px rgba(19,136,8,0.28);
+        tbody td {
+            padding: 12px 15px;
+            color: #374151; vertical-align: middle;
         }
 
-        .att-btn.abs.active {
-            background: #E24B4A; color: var(--white);
-            border-color: #E24B4A;
-            box-shadow: 0 2px 8px rgba(226,75,74,0.28);
+        /* Action Menu */
+        .action-cell {
+            position: relative;
+            display: flex;
+            justify-content: center;
         }
 
-        /* Status pill */
-        .status-pill {
-            display: inline-block; padding: 4px 12px;
-            border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+        .menu-btn {
+            background: #F3F4F6; border: 1.5px solid #E5E7EB;
+            font-size: 1.1rem; cursor: pointer;
+            color: #6B7280; width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            line-height: 1;
         }
 
-        .sp-present   { background: #EAF3DE; color: #27500A; }
-        .sp-absent    { background: #FCEBEB; color: #791F1F; }
-        .sp-notmarked { background: #F3F4F6; color: #9CA3AF; }
+        .menu-btn:hover { background: #E5E7EB; color: var(--navy); border-color: #D1D5DB; }
 
-        .del-btn {
-            padding: 5px 13px;
-            background: #FCEBEB; color: var(--red);
-            border: 1px solid #F7C1C1; border-radius: 7px;
-            font-size: 0.75rem; font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            cursor: pointer; transition: background 0.2s;
+        .action-menu {
+            display: none;
+            position: absolute;
+            right: 15px; top: 100%;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid #E5E7EB;
+            min-width: 140px;
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 5px;
+            animation: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .del-btn:hover { background: #F7C1C1; }
-
-        .empty-state {
-            text-align: center; padding: 3.5rem 2rem;
-            color: #9CA3AF; font-size: 0.88rem;
+        .action-menu button {
+            display: flex; align-items: center; gap: 8px;
+            width: 100%; padding: 10px 16px; background: none; border: none;
+            font-size: 0.82rem; font-weight: 700; font-family: 'Nunito', sans-serif;
+            cursor: pointer; text-align: left; transition: background 0.15s;
         }
 
-        .empty-icon { font-size: 3rem; margin-bottom: 0.8rem; }
+        .action-menu button.update-opt { color: #0C447C; }
+        .action-menu button.update-opt:hover { background: #E6F1FB; }
+        .action-menu button.delete-opt { color: var(--red); }
+        .action-menu button.delete-opt:hover { background: #FCEBEB; }
+
+        @keyframes menuIn {
+            from { opacity:0; transform:translateY(-6px) scale(0.97); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
 
         .fixed-toast {
-            display: none; position: fixed;
-            bottom: 28px; right: 28px;
-            padding: 12px 22px; border-radius: 12px;
-            font-size: 0.84rem; font-weight: 700;
-            color: var(--white); z-index: 9999;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
-            animation: toastIn 0.3s ease;
-        }
-
-        @keyframes toastIn {
-            from { opacity:0; transform:translateY(12px); }
-            to   { opacity:1; transform:translateY(0); }
+            display: none; position: fixed; bottom: 28px; right: 28px;
+            padding: 12px 22px; border-radius: 12px; font-size: 0.84rem; font-weight: 700;
+            color: var(--white); z-index: 9999; box-shadow: 0 6px 24px rgba(0,0,0,0.18);
         }
 
         @media (max-width: 900px) {
-            .topbar {
-                height: auto;
-                padding: 0.75rem 1rem;
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            .topbar-left {
-                width: 100%;
-                flex-wrap: wrap;
-            }
-            .topbar-right {
-                width: 100%;
-                text-align: left;
-            }
-            .table-toolbar,
-            .toolbar-right {
-                gap: 0.5rem;
-                align-items: flex-start;
-                flex-direction: column;
-            }
-            .filter-row {
-                flex-wrap: wrap;
-            }
+            .topbar { height: auto; padding: 0.75rem 1rem; flex-direction: column; gap: 0.5rem; }
+            .topbar-left { width: 100%; flex-wrap: wrap; }
+            .table-toolbar, .toolbar-right { gap: 0.5rem; flex-direction: column; align-items: flex-start; }
         }
 
         @media (max-width: 700px) {
@@ -431,6 +421,7 @@
 
 <div class="fixed-toast" id="fixedToast"></div>
 
+
 <div class="page">
 
     <div class="stats-row">
@@ -453,26 +444,17 @@
     </div>
 
     <div class="add-card">
-        <div class="add-card-title">Add Student to Attendance</div>
+        <div class="add-card-title">Generate Attendance List</div>
 
         <div class="add-fields">
-            <div class="add-field">
-                <label>Student ID</label>
-                <input type="text" id="aId" placeholder="e.g. STU001"/>
-            </div>
-            <div class="add-field">
-                <label>Student Name</label>
-                <input type="text" id="aNm" placeholder="Enter student name"/>
-            </div>
-            <div class="date-wrap">
+            <div class="date-wrap" style="flex: 1;">
                 <label>Date</label>
-                <input type="date" id="aDt"/>
+                <input type="date" id="aDt" min="2020-01-01" max="2026-12-31"/>
             </div>
         </div>
 
-        <!-- CENTERED BUTTON -->
         <div class="add-btn-wrap">
-            <button class="add-student-btn" onclick="addStudent()">+ Add Student</button>
+            <button class="add-student-btn" onclick="addStudent()">Auto-Populate Students</button>
         </div>
 
         <div class="add-msg" id="addMsg"></div>
@@ -500,7 +482,6 @@
                         <th>Date</th>
                         <th>Mark Attendance</th>
                         <th>Status</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="atBody"></tbody>
@@ -515,4 +496,3 @@
 
 </body>
 </html>
-

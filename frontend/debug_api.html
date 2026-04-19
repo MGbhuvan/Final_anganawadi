@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head><title>API Debugger</title></head>
+<body style="font-family: sans-serif; padding: 2rem;">
+    <h1>API Connectivity Debugger</h1>
+    <p>This page tests if your browser can reach the backend API.</p>
+    
+    <div id="results" style="background: #f0f0f0; padding: 1rem; border-radius: 8px; white-space: pre-wrap;">
+        Starting tests...
+    </div>
+
+    <script>
+        async function runTest() {
+            const results = document.getElementById('results');
+            const urls = [
+                "/api/ration/items",
+                "http://127.0.0.1:4000/api/ration/items",
+                "http://localhost:4000/api/ration/items"
+            ];
+
+            for (let url of urls) {
+                results.innerHTML += `\n\nTesting ${url}...`;
+                try {
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+                    results.innerHTML += `\n✅ SUCCESS! Status: ${resp.status}, Items found: ${data.length}`;
+                    if (data.length > 0) {
+                        results.innerHTML += `\n   First item: ${data[0].item_name}`;
+                    }
+                } catch (e) {
+                    results.innerHTML += `\n❌ FAILED: ${e.message}`;
+                }
+            }
+        }
+        runTest();
+    </script>
+</body>
+</html>

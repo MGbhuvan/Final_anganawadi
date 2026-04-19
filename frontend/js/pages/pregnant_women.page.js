@@ -46,22 +46,49 @@ function maskAadhaar(aadhaar) {
 
 function toggleMenu(pwId, event) {
   event.stopPropagation();
-  const menu = document.getElementById(`dots-menu-${pwId}`);
+  const btn = event.currentTarget;
+  const menu = document.getElementById(`menu_${pwId}`);
   if (!menu) return;
   if (openMenuPwId && openMenuPwId !== pwId) {
-    const prev = document.getElementById(`dots-menu-${openMenuPwId}`);
+    const prev = document.getElementById(`menu_${openMenuPwId}`);
     if (prev) prev.classList.remove("open");
   }
+  
+  const isOpening = !menu.classList.contains("open");
   menu.classList.toggle("open");
-  openMenuPwId = menu.classList.contains("open") ? pwId : null;
+  openMenuPwId = isOpening ? pwId : null;
+
+  if (isOpening) {
+    // Dynamic fixed positioning
+    const rect = btn.getBoundingClientRect();
+    menu.style.position = "fixed";
+    menu.style.margin = "0";
+    
+    // Align right edge
+    menu.style.left = "auto";
+    menu.style.right = `${window.innerWidth - rect.right}px`;
+
+    // Pop upwards if tight on space
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 120) {
+      menu.style.top = "auto";
+      menu.style.bottom = `${window.innerHeight - rect.top + 5}px`;
+    } else {
+      menu.style.bottom = "auto";
+      menu.style.top = `${rect.bottom + 5}px`;
+    }
+  }
 }
 
-document.addEventListener("click", () => {
+function closeAllMenus() {
   if (!openMenuPwId) return;
-  const menu = document.getElementById(`dots-menu-${openMenuPwId}`);
+  const menu = document.getElementById(`menu_${openMenuPwId}`);
   if (menu) menu.classList.remove("open");
   openMenuPwId = null;
-});
+}
+
+document.addEventListener("click", closeAllMenus);
+document.addEventListener("scroll", closeAllMenus, true);
 
 function promptDelete(pwId) {
   const target = records.find((r) => r.pw_id === pwId);
@@ -116,15 +143,11 @@ function renderTable() {
       <td>+91 ${r.phone}</td>
       <td><span class="pill ${pillClass(r.status)}">${r.status}</span></td>
       <td>${String(r.registration_date).slice(0, 10)}</td>
-      <td>
-        <div class="action-cell">
-          <button class="update-btn" onclick="startEdit('${r.pw_id}')">✏️ Update</button>
-          <div style="position:relative;">
-            <button class="dots-btn" onclick="toggleMenu('${r.pw_id}', event)" title="More options">⋯</button>
-            <div class="dots-menu" id="dots-menu-${r.pw_id}">
-              <button class="dots-menu-item delete-item" onclick="promptDelete('${r.pw_id}')">🗑️ Delete</button>
-            </div>
-          </div>
+      <td class="action-cell">
+        <button class="menu-btn" onclick="toggleMenu('${r.pw_id}', event)" title="More options">⋮</button>
+        <div class="action-menu" id="menu_${r.pw_id}">
+          <button class="update-opt" onclick="startEdit('${r.pw_id}')">✏️ Update</button>
+          <button class="delete-opt" onclick="promptDelete('${r.pw_id}')">🗑️ Delete</button>
         </div>
       </td>
     </tr>`
