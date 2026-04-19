@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ration Stock - Poshan Abhiyan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold:     #F5A623;
+            --saffron:  #FF6B00;
+            --green:    #138808;
+            --navy:     #141e30;
+            --white:    #FFFFFF;
+            --red:      #A32D2D;
+            --blue:     #378ADD;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            background: #f4f6fb;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a2a4a 100%);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 16px rgba(0,0,0,0.18);
+        }
+
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+
+        .back-btn {
+            display: flex; align-items: center; gap: 6px;
+            color: rgba(255,255,255,0.75); text-decoration: none;
+            font-size: 0.82rem; font-weight: 700;
+            padding: 6px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.18);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+
+        .topbar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem; font-weight: 700; color: var(--white);
+        }
+
+        .topbar-right {
+            font-size: 0.72rem; color: rgba(255,255,255,0.38);
+            letter-spacing: 0.12em; text-transform: uppercase;
+        }
+
+        /* TRICOLOR */
+        .tricolor {
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--saffron) 0% 33%,
+                var(--white)   33% 66%,
+                var(--gold)    66% 100%
+            );
+        }
+
+        /* PAGE */
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.3rem 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--gold);
+            position: relative; overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute; right: -10px; top: -10px;
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(245,166,35,0.07);
+        }
+
+        .stat-card.blue  { border-top-color: var(--blue); }
+        .stat-card.blue::after  { background: rgba(55,138,221,0.07); }
+        .stat-card.green { border-top-color: var(--green); }
+        .stat-card.green::after { background: rgba(19,136,8,0.07); }
+        .stat-card.red   { border-top-color: var(--red); }
+        .stat-card.red::after   { background: rgba(163,45,45,0.07); }
+
+        .stat-label {
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: #9CA3AF; margin-bottom: 0.5rem;
+        }
+
+        .stat-val {
+            font-size: 2.2rem; font-weight: 800;
+            color: var(--navy); line-height: 1;
+        }
+
+        /* FORM CARD */
+        .form-card {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            margin-bottom: 1.5rem;
+            border: 1.5px solid #fff9e6;
+        }
+
+        .form-card-title {
+            font-size: 1rem; font-weight: 800; color: var(--navy);
+            margin-bottom: 1.3rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .form-card-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px; height: 22px;
+            background: linear-gradient(180deg, var(--gold), var(--saffron));
+            border-radius: 3px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .field { display: flex; flex-direction: column; gap: 5px; }
+
+        .field label {
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: #6B7280;
+        }
+
+        .field input, .field select {
+            padding: 9px 12px;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-family: 'Nunito', sans-serif;
+            color: var(--navy); background: #FAFAFA;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .field input:focus, .field select:focus {
+            border-color: var(--gold);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(245,166,35,0.12);
+        }
+
+        .field input::placeholder { color: #D1D5DB; }
+
+        .stock-preview {
+            grid-column: span 3;
+            background: #FFFBF0;
+            border: 1.5px solid #FAEEDA;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.82rem;
+            color: #633806;
+            font-weight: 600;
+            display: none;
+        }
+
+        .stock-preview.show { display: block; }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clear-btn {
+            padding: 10px 20px;
+            background: #F3F4F6; color: #6B7280;
+            border: none; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer; transition: background 0.2s;
+        }
+
+        .clear-btn:hover { background: #E5E7EB; }
+
+        .save-btn {
+            padding: 10px 28px;
+            background: linear-gradient(135deg, var(--gold), var(--saffron));
+            color: var(--white); border: none; border-radius: 10px;
+            font-size: 0.88rem; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245,166,35,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(245,166,35,0.45);
+        }
+
+        .save-btn:active { transform: translateY(0); }
+
+        .toast-msg {
+            display: none;
+            margin-top: 1rem;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.82rem; font-weight: 700;
+            text-align: center;
+        }
+
+        .toast-msg.success {
+            display: block;
+            background: #EAF3DE; color: #27500A;
+            border: 1px solid #C0DD97;
+        }
+
+        .toast-msg.error {
+            display: block;
+            background: #FCEBEB; color: #791F1F;
+            border: 1px solid #F7C1C1;
+        }
+
+        /* TABLE CARD */
+        .table-card {
+            background: var(--white);
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .table-toolbar {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.6rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .table-toolbar-title {
+            font-size: 1rem; font-weight: 800; color: var(--navy);
+        }
+
+        .rec-badge {
+            font-size: 0.75rem; font-weight: 700;
+            color: #633806; background: #FAEEDA;
+            padding: 4px 12px; border-radius: 20px;
+        }
+
+        .table-wrap { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+
+        thead tr {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a2a4a 100%);
+        }
+
+        thead th {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 13px 15px; text-align: left; white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #F9FAFB;
+            transition: background 0.15s;
+            animation: rowIn 0.3s ease both;
+        }
+
+        @keyframes rowIn {
+            from { opacity:0; transform:translateX(-8px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #FFFBF0; }
+
+        tbody td {
+            padding: 12px 15px;
+            color: #374151; vertical-align: middle;
+        }
+
+        .rs-id {
+            display: inline-block;
+            padding: 3px 9px;
+            background: #FAEEDA; color: #633806;
+            border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+        }
+
+        .rs-name { font-weight: 700; color: var(--navy); }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 700;
+        }
+
+        .pill-high   { background: #EAF3DE; color: #27500A; }
+        .pill-medium { background: #FAEEDA; color: #633806; }
+        .pill-low    { background: #FCEBEB; color: #791F1F; }
+
+        .qty-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; font-weight: 700; color: var(--navy);
+        }
+
+        .del-btn {
+            padding: 5px 13px;
+            background: #FCEBEB; color: var(--red);
+            border: 1px solid #F7C1C1; border-radius: 7px;
+            font-size: 0.75rem; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer; transition: background 0.2s;
+        }
+
+        .del-btn:hover { background: #F7C1C1; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 2rem;
+            color: #9CA3AF; font-size: 0.88rem;
+        }
+
+        .empty-icon { font-size: 3rem; margin-bottom: 0.8rem; }
+
+        /* FIXED TOAST */
+        .fixed-toast {
+            display: none;
+            position: fixed;
+            bottom: 28px; right: 28px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-size: 0.84rem; font-weight: 700;
+            color: var(--white); z-index: 9999;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity:0; transform:translateY(12px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* EXPORT BUTTONS */
+        .export-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 0.78rem; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer; border: none;
+            transition: all 0.18s;
+        }
+
+        .btn-print {
+            background: #EAF3DE; color: #27500A;
+            border: 1px solid #C0DD97;
+        }
+        .btn-print:hover { background: #C0DD97; }
+
+        .btn-csv {
+            background: #e8f0fd; color: #1a4a9e;
+            border: 1px solid #b3cafe;
+        }
+        .btn-csv:hover { background: #b3cafe; }
+
+        .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        /* PRINT STYLES */
+        @media print {
+            body { background: white !important; }
+            .topbar, .tricolor, .form-card, .fixed-toast,
+            .export-btn, .del-btn, .rec-badge { display: none !important; }
+            .page { padding: 0 !important; max-width: 100% !important; }
+            .stats-row { break-inside: avoid; }
+            .table-card { box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; }
+            .print-header { display: block !important; }
+            thead tr { background: #141e30 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .stat-card { box-shadow: none !important; border: 1px solid #eee !important; }
+        }
+
+        .print-header {
+            display: none;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #F5A623;
+        }
+
+        .print-header h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #141e30; }
+        .print-header p  { font-size: 0.8rem; color: #6B7280; margin-top: 4px; }
+
+        @media (max-width: 900px) {
+            .topbar {
+                height: auto;
+                padding: 0.75rem 1rem;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .topbar-left {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .topbar-right {
+                width: 100%;
+                text-align: left;
+            }
+            .table-toolbar,
+            .toolbar-actions {
+                gap: 0.5rem;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 700px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .page { padding: 1rem 1rem 3rem; }
+        }
+
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .stock-preview { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="home.html" class="back-btn">&#8592; Home</a>
+        <div class="topbar-title">Ration Stock Module</div>
+    </div>
+    <div class="topbar-right">Poshan Abhiyan</div>
+</div>
+<div class="tricolor"></div>
+
+<!-- FIXED TOAST -->
+<div class="fixed-toast" id="fixedToast"></div>
+
+<div class="page">
+
+    <!-- PRINT HEADER (only visible when printing) -->
+    <div class="print-header">
+        <h2>Ration Stock Report — Poshan Abhiyan</h2>
+        <p id="printDate"></p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Total Stock Entries</div>
+            <div class="stat-val" id="sTotal">0</div>
+        </div>
+        <div class="stat-card blue">
+            <div class="stat-label">PW Ration (kg)</div>
+            <div class="stat-val" id="sPW">0</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label">Student Ration (kg)</div>
+            <div class="stat-val" id="sST">0</div>
+        </div>
+        <div class="stat-card red">
+            <div class="stat-label">Low Stock Alerts</div>
+            <div class="stat-val" id="sLow">0</div>
+        </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+        <div class="form-card-title">Add Ration Stock Entry</div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label>RS ID</label>
+                <input type="text" id="fRsId" placeholder="e.g. RS001"/>
+            </div>
+            <div class="field">
+                <label>Ration Centre Name</label>
+                <input type="text" id="fCentre" placeholder="Enter centre name"/>
+            </div>
+            <div class="field">
+                <label>Ration Item</label>
+                <select id="fItem">
+                    <option value="">-- Select Item --</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Wheat">Wheat</option>
+                    <option value="Dal">Dal</option>
+                    <option value="Sugar">Sugar</option>
+                    <option value="Oil">Oil</option>
+                    <option value="Salt">Salt</option>
+                    <option value="Fortified Flour">Fortified Flour</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>PW Ration (kg)</label>
+                <input type="number" id="fPW" placeholder="e.g. 25" min="0" step="0.1" oninput="updatePreview()"/>
+            </div>
+            <div class="field">
+                <label>Student Ration (kg)</label>
+                <input type="number" id="fST" placeholder="e.g. 40" min="0" step="0.1" oninput="updatePreview()"/>
+            </div>
+            <div class="field">
+                <label>Stock Level</label>
+                <select id="fLevel">
+                    <option value="">-- Select Level --</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+
+            <div class="stock-preview" id="stockPreview"></div>
+        </div>
+
+        <div class="form-actions">
+            <button class="clear-btn" onclick="clearForm()">Clear</button>
+            <button class="save-btn" onclick="saveRecord()">Save Record</button>
+        </div>
+
+        <div class="toast-msg" id="toastMsg"></div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+        <div class="table-toolbar">
+            <div class="table-toolbar-title">All Ration Stock Records</div>
+            <div class="toolbar-actions">
+                <span class="rec-badge" id="recBadge">0 records</span>
+                <button class="export-btn btn-csv" onclick="exportCSV()">⬇ Export CSV</button>
+                <button class="export-btn btn-print" onclick="printReport()">🖨 Print</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Entry ID</th>
+                        <th>RS ID</th>
+                        <th>Centre Name</th>
+                        <th>Ration Item</th>
+                        <th>PW Ration</th>
+                        <th>Student Ration</th>
+                        <th>Total Stock</th>
+                        <th>Stock Level</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="rsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script type="module" src="js/shared/serverGuard.js"></script>
+<script type="module" src="js/pages/ration.page.js"></script>
+
+</body>
+</html>
+
+

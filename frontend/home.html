@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Poshan Abhiyan</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  /* ── PAGE WRAPPER ── */
+  .hp{
+    font-family:sans-serif;
+    min-height:100vh;
+    color:#0E1117;
+    position:relative;
+  }
+
+  /* BG image layer — fixed behind everything */
+  .hp::before{
+    content:'';
+    position:fixed;inset:0;
+    background:url('static/PA.jpeg') center/cover no-repeat;
+    filter:brightness(1.05) saturate(0.65);
+    z-index:0;
+  }
+  /* Cream wash — makes bg subtle and blends with light cards */
+  .hp::after{
+    content:'';
+    position:fixed;inset:0;
+    background:rgba(240,237,232,0.80);
+    z-index:1;
+  }
+
+  /* DARK MODE — same bg image but darkened wash */
+  .hp.dark{ color:#EDE9E2; }
+  .hp.dark::before{ filter:brightness(0.30) saturate(0.45); }
+  .hp.dark::after{ background:rgba(12,14,20,0.82); }
+
+  /* Everything above the pseudo layers */
+  .tri,.header-wrap,.pg{ position:relative; z-index:2; }
+
+  /* Tricolor stripe */
+  .tri{height:4px;background:linear-gradient(90deg,#E05C1A 0 33%,#fff 33% 66%,#1B7840 66% 100%);}
+
+  /* ── PROFILE CIRCLE ── */
+  .header-wrap{max-width:980px;margin:0 auto;padding:0 16px 10px;}
+  .profile-wrap{display:flex;justify-content:center;padding:20px 0 12px;}
+  .profile-circle{
+    width:120px;height:120px;border-radius:50%;
+    overflow:hidden;
+    border:4px solid rgba(255,255,255,0.9);
+    box-shadow:0 4px 24px rgba(0,0,0,0.16);
+    background:#E3E0D9;
+  }
+  .hp.dark .profile-circle{ border-color:rgba(255,255,255,0.15); }
+  .profile-circle img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* ── NAV ── */
+  .nav{
+    min-height:54px;
+    background:rgba(245,244,241,0.75);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.5);
+    border-radius:12px;
+    display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  }
+  .hp.dark .nav{background:rgba(17,19,24,0.75);border-color:rgba(255,255,255,0.06);}
+  .nav-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+  .nav-flag{display:flex;flex-direction:column;height:16px;width:9px;border-radius:2px;overflow:hidden;}
+  .nf1{flex:1;background:#FF9933;}.nf2{flex:1;background:#fff;}.nf3{flex:1;background:#138808;}
+  .nav-brand{font-size:13px;font-weight:600;color:#0E1117;letter-spacing:0.06em;white-space:nowrap;}
+  .hp.dark .nav-brand{color:#EDE9E2;}
+  .nav-sep{width:1px;height:18px;background:rgba(0,0,0,0.12);}
+  .hp.dark .nav-sep{background:rgba(255,255,255,0.1);}
+  .nav-sub{font-size:10px;color:#9A9590;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nav-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
+  .nav-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:999px;background:rgba(27,120,64,0.12);color:#1B7840;border:1px solid rgba(27,120,64,0.25);}
+  .nav-btn{font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.55);cursor:pointer;color:#9A9590;}
+  .hp.dark .nav-btn{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#6B6760;}
+
+  /* ── CONTENT ── */
+  .pg{max-width:900px;margin:0 auto;padding:24px 16px 48px;}
+
+  /* HERO */
+  .hero{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;}
+  .hero-lbl{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#9A9590;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .hero-lbl::before{content:'';display:inline-block;width:16px;height:2px;background:#E05C1A;border-radius:2px;}
+  .hero-title{font-size:26px;font-weight:500;color:#0E1117;line-height:1.1;}
+  .hp.dark .hero-title{color:#EDE9E2;}
+  .hero-title em{font-style:italic;color:#1B7840;}
+
+  /* Clock */
+  .clock{
+    background:rgba(255,255,255,0.55);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:14px;padding:10px 16px;text-align:right;
+    box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  }
+  .hp.dark .clock{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
+  .clock-t{font-size:20px;font-weight:500;color:#0E1117;letter-spacing:-0.02em;}
+  .hp.dark .clock-t{color:#EDE9E2;}
+  .clock-day{font-size:9px;font-weight:500;color:#1B7840;text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;}
+  .clock-date{font-size:9px;color:#9A9590;}
+
+  /* ABOUT */
+  .about{
+    background:rgba(255,255,255,0.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.60);
+    border-radius:18px;padding:22px 26px;margin-bottom:28px;
+    box-shadow:0 2px 16px rgba(0,0,0,0.05);
+  }
+  .hp.dark .about{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
+  .about-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .about-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#E05C1A,#C48A14);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .about-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
+  .about-tag{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#E05C1A;}
+  .about-h{font-size:15px;font-weight:500;color:#0E1117;}
+  .hp.dark .about-h{color:#EDE9E2;}
+  .about-text{font-size:12px;line-height:1.85;color:#6B6760;}
+  .hp.dark .about-text{color:#9A9590;}
+  .about-pills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+  .about-pill{font-size:9px;padding:3px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:rgba(255,255,255,0.35);}
+  .hp.dark .about-pill{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.15);}
+
+  /* SECTION LABEL */
+  .sec-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#9A9590;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .sec-lbl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,0.10);}
+  .hp.dark .sec-lbl::after{background:rgba(255,255,255,0.10);}
+
+  /* ── CARDS — glass, spaced, blended ── */
+  .cards{display:flex;flex-direction:column;gap:16px;}
+
+  .card{
+    display:flex;
+    background:rgba(255,255,255,0.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.60);
+    border-radius:16px;
+    overflow:hidden;
+    transition:background 0.22s, box-shadow 0.22s;
+    text-decoration:none;color:inherit;
+    box-shadow:0 2px 12px rgba(0,0,0,0.05);
+  }
+  .hp.dark .card{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
+  .card:hover{background:rgba(255,255,255,0.78);box-shadow:0 6px 28px rgba(0,0,0,0.10);}
+  .hp.dark .card:hover{background:rgba(28,31,39,0.78);}
+
+  .card-bar{width:4px;flex-shrink:0;}
+
+  .card-img{flex-shrink:0;width:220px;height:160px;overflow:hidden;position:relative;}
+  .card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;}
+  .card:hover .card-img img{transform:scale(1.06);}
+  .card-img-overlay{position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,0.08));z-index:1;}
+
+  .card-body{flex:1;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;}
+  .card-title{font-size:17px;font-weight:500;color:#0E1117;margin-bottom:6px;line-height:1.2;}
+  .hp.dark .card-title{color:#EDE9E2;}
+  .card-desc{font-size:12px;line-height:1.75;color:#6B6760;}
+  .hp.dark .card-desc{color:#9A9590;}
+  .card-tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+  .card-tag{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:rgba(255,255,255,0.35);}
+  .hp.dark .card-tag{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.15);}
+
+  .card-arrow{flex-shrink:0;display:flex;align-items:center;padding:0 20px;}
+  .arrow-circle{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:#C8C4BC;font-size:14px;transition:all 0.22s;}
+  .hp.dark .arrow-circle{border-color:rgba(255,255,255,0.1);color:#444441;}
+  .card:hover .arrow-circle{border-color:var(--ac,#E05C1A);color:var(--ac,#E05C1A);transform:translateX(3px);}
+
+  /* FOOTER */
+  .ft{margin-top:22px;border-top:1px solid rgba(0,0,0,0.08);padding-top:14px;text-align:center;}
+  .hp.dark .ft{border-color:rgba(255,255,255,0.08);}
+  .ft-text{font-size:10px;color:#9A9590;letter-spacing:0.06em;}
+  .ft-pips{display:flex;gap:5px;justify-content:center;margin-top:6px;}
+  .pip{width:7px;height:7px;border-radius:50%;}
+
+  @media (max-width: 900px){
+    .nav{height:auto;padding:10px 14px;gap:8px;align-items:flex-start;flex-direction:column;}
+    .nav-left{width:100%;flex-wrap:wrap;}
+    .nav-right{width:100%;justify-content:flex-start;flex-wrap:wrap;}
+    .hero{align-items:flex-start;flex-direction:column;gap:12px;}
+    .clock{text-align:left;}
+    .card{flex-direction:column;}
+    .card-img{width:100%;height:190px;}
+    .card-body{padding:16px;}
+    .card-arrow{justify-content:flex-end;padding:0 16px 16px;}
+  }
+
+  @media (max-width: 600px){
+    .header-wrap{padding:0 10px 8px;}
+    .profile-wrap{padding:16px 0 10px;}
+    .profile-circle{width:96px;height:96px;}
+    .pg{padding:16px 12px 34px;}
+    .hero-title{font-size:22px;}
+    .about{padding:16px;}
+    .about-top{align-items:flex-start;}
+    .nav-sep{display:none;}
+    .nav-sub{letter-spacing:0.06em;}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#E8E4DE;">
+
+<div class="hp" id="hp">
+  <div class="tri"></div>
+  <div class="header-wrap">
+
+  <!-- PROFILE CIRCLE — static/mom.jpeg should be in same folder as this HTML file -->
+  <div class="profile-wrap">
+    <div class="profile-circle">
+      <img src="static/mom.jpeg" alt="Profile Photo"/>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-left">
+      <div class="nav-flag"><div class="nf1"></div><div class="nf2"></div><div class="nf3"></div></div>
+      <span class="nav-brand">POSHAN ABHIYAN</span>
+      <div class="nav-sep"></div>
+      <span class="nav-sub">Anganwadi Management</span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-badge">Welcome, Admin</span>
+      <button class="nav-btn" onclick="toggleTheme()">&#9788; Theme</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="pg">
+
+    <div class="hero">
+      <div>
+        <div class="hero-lbl">Dashboard</div>
+        <div class="hero-title">Poshan <em>Abhiyan</em></div>
+      </div>
+      <div class="clock">
+        <div class="clock-t" id="cT">--:--</div>
+        <div class="clock-day" id="cD"></div>
+        <div class="clock-date" id="cDt"></div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="about">
+      <div class="about-top">
+        <div class="about-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <div class="about-tag">About the Project</div>
+          <div class="about-h">What is Poshan Abhiyan?</div>
+        </div>
+      </div>
+      <div class="about-text">
+        Poshan Abhiyaan was launched in 2018 to improve nutrition for children, pregnant women, and lactating mothers. Ministry of Women and Child Development implements the mission through Anganwadi centres, which provide nutrition, health education, and supplementary feeding. This digital system helps Anganwadi workers manage records, track ration distribution, monitor attendance, and generate reports efficiently.
+      </div>
+      <div class="about-pills">
+        <span class="about-pill">Est. 8 March 2018</span>
+        <span class="about-pill">MoWCD · Govt. of India</span>
+        <span class="about-pill">1000-Day Mission</span>
+        <span class="about-pill">Bhuvan M Gouda</span>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Manage Records</div>
+
+    <div class="cards">
+
+      <!-- Card 1: Pregnant Women -->
+      <a href="pregnant_women.html" class="card" style="--ac:#E05C1A;">
+        <div class="card-bar" style="background:#E05C1A;"></div>
+        <div class="card-img">
+          <img src="static/PW.jpeg" alt="Pregnant Women"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Pregnant Women</div>
+          <div class="card-desc">Track complete maternal care across 1000 days — from pregnancy through early childhood. Monitor health status, nutritional needs, medical checkups, government benefit eligibility and delivery records for every registered beneficiary at the Anganwadi centre.</div>
+          <div class="card-tags">
+            <span class="card-tag">1000-Day Care</span>
+            <span class="card-tag">Health Monitoring</span>
+            <span class="card-tag">Benefits</span>
+          </div>
+        </div>
+        <div class="card-arrow"><div class="arrow-circle">→</div></div>
+      </a>
+
+      <!-- Card 2: Newborn & Child Care -->
+      <a href="child.html" class="card" style="--ac:#C48A14;">
+        <div class="card-bar" style="background:#C48A14;"></div>
+        <div class="card-img">
+          <img src="static/baby.jpeg" alt="Newborn Baby"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Newborn & Child Care</div>
+          <div class="card-desc">Record and monitor every child's physical development — height, weight, BMI, nutrition levels and vaccination history. Track developmental milestones and generate growth charts for children from birth through age 6 registered at the centre.</div>
+          <div class="card-tags">
+            <span class="card-tag">Growth Tracking</span>
+            <span class="card-tag">Vaccination</span>
+            <span class="card-tag">BMI</span>
+          </div>
+        </div>
+        <div class="card-arrow"><div class="arrow-circle">→</div></div>
+      </a>
+
+      <!-- Card 3: Student Details -->
+      <a href="student.html" class="card" style="--ac:#1B7840;">
+        <div class="card-bar" style="background:#1B7840;"></div>
+        <div class="card-img">
+          <img src="static/stud.jpeg" alt="Students"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Student Details</div>
+          <div class="card-desc">Manage complete student profiles including enrollment details, personal information and learning milestones. Maintain organised digital records for every child registered at the Anganwadi centre including date of birth and gender details.</div>
+          <div class="card-tags">
+            <span class="card-tag">Enrollment</span>
+            <span class="card-tag">Records</span>
+            <span class="card-tag">Personal Details</span>
+          </div>
+        </div>
+        <div class="card-arrow"><div class="arrow-circle">→</div></div>
+      </a>
+
+      <!-- Card 4: Attendance -->
+      <a href="attendance.html" class="card" style="--ac:#7A2EAB;">
+        <div class="card-bar" style="background:#7A2EAB;"></div>
+        <div class="card-img">
+          <img src="static/attend.jpeg" alt="Attendance"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Attendance</div>
+          <div class="card-desc">Record and manage daily attendance for all children and Anganwadi staff members. Mark present or absent directly from the table, view monthly summaries, identify absenteeism patterns and generate official reports for government submission.</div>
+          <div class="card-tags">
+            <span class="card-tag">Daily Register</span>
+            <span class="card-tag">Monthly Report</span>
+            <span class="card-tag">Staff & Children</span>
+          </div>
+        </div>
+        <div class="card-arrow"><div class="arrow-circle">→</div></div>
+      </a>
+
+      <!-- Card 5: Ration Stock -->
+      <a href="ration.html" class="card" style="--ac:#1D5FAD;">
+        <div class="card-bar" style="background:#1D5FAD;"></div>
+        <div class="card-img">
+          <img src="static/stock.jpeg" alt="Ration Stock"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Ration Stock Details</div>
+          <div class="card-desc">Maintain complete ration inventory with item-wise stock levels and daily food distribution records. Generate detailed reports on consumption patterns and ensure timely restocking for all Anganwadi beneficiaries registered at the centre.</div>
+          <div class="card-tags">
+            <span class="card-tag">Inventory</span>
+            <span class="card-tag">Distribution</span>
+            <span class="card-tag">Stock Reports</span>
+          </div>
+        </div>
+        <div class="card-arrow"><div class="arrow-circle">→</div></div>
+      </a>
+
+    </div>
+
+    <div class="ft">
+      <div class="ft-text">© 2025 Poshan Abhiyan &nbsp;·&nbsp; Bhuvan M Gouda &nbsp;·&nbsp; All rights reserved</div>
+      <div class="ft-pips">
+        <div class="pip" style="background:#E05C1A;"></div>
+        <div class="pip" style="background:#888;"></div>
+        <div class="pip" style="background:#1B7840;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="js/shared/serverGuard.js"></script>
+<script>
+  function updateClock(){
+    const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0');
+    const ap=h>=12?'PM':'AM',h12=h%12||12;
+    document.getElementById('cT').innerHTML=String(h12).padStart(2,'0')+':'+m+'<span style="font-size:9px;color:#E05C1A;margin-left:4px;">'+ap+'</span>';
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('cD').textContent=days[now.getDay()];
+    document.getElementById('cDt').textContent=now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  }
+  updateClock(); setInterval(updateClock,1000);
+
+  function toggleTheme(){ document.getElementById('hp').classList.toggle('dark'); }
+</script>
+
+</body>
+</html>
+

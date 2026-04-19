@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>POSHAN ABHIYAN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --saffron: #FF6B00;
+            --green:   #138808;
+            --gold:    #F5A623;
+            --navy:    #141e30;
+            --white:   #FFFFFF;
+        }
+
+        .tricolor-top {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(90deg,
+                var(--saffron) 0% 33%,
+                var(--white)   33% 66%,
+                var(--green)   66% 100%
+            );
+            z-index: 100;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            background: url("static/PA.jpeg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Light warm overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg,
+                rgba(255,248,235,0.94) 0%,
+                rgba(240,255,240,0.92) 50%,
+                rgba(255,240,220,0.94) 100%
+            );
+            z-index: 0;
+        }
+
+        /* Soft blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob1 { width:400px; height:400px; background:var(--saffron); top:-120px; left:-120px; animation:drift 8s ease-in-out infinite alternate; }
+        .blob2 { width:350px; height:350px; background:var(--green);   bottom:-100px; right:-100px; animation:drift 10s ease-in-out infinite alternate-reverse; }
+        .blob3 { width:250px; height:250px; background:var(--gold);    top:40%; left:55%; animation:drift 12s ease-in-out infinite alternate; }
+
+        @keyframes drift {
+            from { transform:translate(0,0) scale(1); }
+            to   { transform:translate(30px,20px) scale(1.06); }
+        }
+
+        /* Particles */
+        .particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .particle  { position:absolute; border-radius:50%; opacity:0; animation:floatUp linear infinite; }
+
+        @keyframes floatUp {
+            0%   { opacity:0;   transform:translateY(0) scale(0.5); }
+            10%  { opacity:0.5; }
+            90%  { opacity:0.1; }
+            100% { opacity:0;   transform:translateY(-100vh) scale(1.2); }
+        }
+
+        /* CONTENT */
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            animation: cardIn 0.8s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity:0; transform:translateY(30px) scale(0.96); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
+
+        /* LOGO RING */
+        .logo-wrap {
+            position: relative;
+            width: 180px; height: 180px;
+            margin-bottom: 2rem;
+        }
+
+        .ring-glow {
+            position: absolute;
+            inset: -16px;
+            border-radius: 50%;
+            background: conic-gradient(
+                rgba(255,107,0,0.25),
+                rgba(245,166,35,0.25),
+                rgba(19,136,8,0.25),
+                rgba(245,166,35,0.25),
+                rgba(255,107,0,0.25)
+            );
+            filter: blur(12px);
+            animation: rotateBorder 3s linear infinite;
+            z-index: 0;
+        }
+
+        .ring-outer {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--saffron) 0deg 120deg,
+                var(--white)   120deg 240deg,
+                var(--green)   240deg 360deg
+            );
+            animation: rotateBorder 3s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes rotateBorder { to { transform:rotate(360deg); } }
+
+        .ring-gap {
+            position: absolute;
+            inset: -1px;
+            border-radius: 50%;
+            background: rgba(255,248,235,0.6);
+            z-index: 2;
+        }
+
+        .logo-img {
+            position: absolute;
+            inset: 6px;
+            z-index: 3;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--white);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .logo-img img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+        }
+
+        /* Mandala dots */
+        .mandala-dots {
+            position: absolute;
+            inset: -28px;
+            z-index: 4;
+            animation: rotateBorder 10s linear infinite;
+        }
+
+        .mandala-dots::before, .mandala-dots::after {
+            content: '';
+            position: absolute;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            top: 50%; left: 0;
+            transform: translateY(-50%);
+            box-shadow: 228px 0 0 0 var(--gold);
+        }
+
+        .mandala-dots::after {
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 228px 0 0 var(--gold);
+        }
+
+        /* TITLE */
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            color: var(--navy);
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            animation: slideUp 0.7s 0.3s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        .title-underline {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--saffron), var(--gold), var(--green));
+            border-radius: 2px;
+            margin: 0.5rem auto 0;
+            animation: growLine 0.8s 0.6s ease both;
+            transform-origin: center;
+        }
+
+        @keyframes growLine {
+            from { transform:scaleX(0); opacity:0; }
+            to   { transform:scaleX(1); opacity:1; }
+        }
+
+        .sub-title {
+            margin-top: 0.8rem;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            font-weight: 600;
+            color: rgba(0,0,0,0.40);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            animation: slideUp 0.7s 0.5s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(20px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* BADGES */
+        .badges {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: slideUp 0.7s 0.7s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        .badge {
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1.5px solid rgba(0,0,0,0.10);
+            color: rgba(0,0,0,0.45);
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .badge.accent {
+            background: rgba(255,107,0,0.10);
+            border-color: rgba(255,107,0,0.25);
+            color: var(--saffron);
+        }
+
+        /* LOADING BAR */
+        .loader-wrap {
+            margin-top: 2.5rem;
+            width: 220px;
+            animation: slideUp 0.7s 0.9s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        .loader-label {
+            font-size: 0.72rem;
+            color: rgba(0,0,0,0.35);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .loader-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--saffron), var(--gold), var(--green));
+            animation: loadFill 2.3s 0.2s ease forwards;
+        }
+
+        @keyframes loadFill {
+            from { width:0%; }
+            to   { width:100%; }
+        }
+
+        /* FOOTER */
+        .govt-footer {
+            position: fixed;
+            bottom: 1rem;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.65rem;
+            color: rgba(0,0,0,0.22);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            z-index: 10;
+            animation: slideUp 0.7s 1s ease both;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem 0.75rem 2.5rem;
+            }
+            .content {
+                padding: 1rem;
+            }
+            .logo-wrap {
+                width: 140px;
+                height: 140px;
+                margin-bottom: 1.25rem;
+            }
+            .loader-wrap {
+                width: min(220px, 100%);
+                margin-top: 1.5rem;
+            }
+            .govt-footer {
+                bottom: 0.5rem;
+                font-size: 0.58rem;
+                letter-spacing: 0.08em;
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tricolor-top"></div>
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="content">
+
+        <div class="logo-wrap">
+            <div class="ring-glow"></div>
+            <div class="ring-outer"></div>
+            <div class="ring-gap"></div>
+            <div class="mandala-dots"></div>
+            <div class="logo-img">
+                <img src="static/mom.jpeg" alt="Poshan Abhiyan"/>
+            </div>
+        </div>
+
+        <h1 class="main-title">POSHAN ABHIYAN</h1>
+        <div class="title-underline"></div>
+        <p class="sub-title">Anganwadi Management System</p>
+
+        <div class="badges">
+            <div class="badge accent">Poshan Abhiyan</div>
+            <div class="badge">Digital India</div>
+            <div class="badge">1000-Day Care</div>
+        </div>
+
+        <div class="loader-wrap">
+            <div class="loader-label">Loading portal...</div>
+            <div class="loader-track">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="govt-footer">© 2025 Poshan Abhiyan · Bhuvan M Gouda · All rights reserved</div>
+
+    <script type="module" src="js/shared/serverGuard.js"></script>
+    <script>
+        /* Particles */
+        (function () {
+            const container = document.getElementById('particles');
+            const colors = ['#FF6B00','#138808','#F5A623','#FFD700','#FF4081'];
+            const sizes  = [3, 4, 5, 6, 7];
+            for (let i = 0; i < 30; i++) {
+                const p     = document.createElement('div');
+                p.className = 'particle';
+                const size  = sizes[Math.floor(Math.random() * sizes.length)];
+                p.style.cssText = [
+                    'width:'              + size + 'px',
+                    'height:'             + size + 'px',
+                    'left:'               + (Math.random() * 100) + '%',
+                    'bottom:-10px',
+                    'background:'         + colors[Math.floor(Math.random() * colors.length)],
+                    'animation-duration:' + (5 + Math.random() * 9) + 's',
+                    'animation-delay:'    + (Math.random() * 7)     + 's',
+                    'opacity:0'
+                ].join(';');
+                container.appendChild(p);
+            }
+        })();
+
+        /* Redirect after 2.5s */
+        setTimeout(function () {
+            window.location.href = "login.html";
+        }, 2500);
+    </script>
+
+</body>
+</html>

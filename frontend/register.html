@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REGISTER</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: url("static/PA.jpeg") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+}
+
+/* Dark overlay */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    width: min(360px, 100%);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #243b55;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+}
+
+.input-group label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.eye {
+    position: absolute;
+    right: 12px;
+    top: 38px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Stylish Button */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(45deg, #ff9933, #ff6600);
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255,102,0,0.4);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,102,0,0.6);
+}
+
+.login-link {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.login-link a {
+    text-decoration: none;
+    color: #243b55;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 24px 18px;
+        border-radius: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>REGISTER</h2>
+
+    <form onsubmit="return validatePassword()">
+
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+            <span class="eye" onclick="togglePassword('password', this)">👁‍🗨</span>
+        </div>
+
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" required>
+            <span class="eye" onclick="togglePassword('confirmPassword', this)">👁‍🗨</span>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+    </form>
+
+    <div class="login-link">
+        <a href="login.html">Back to Login</a>
+    </div>
+</div>
+
+<script type="module" src="js/shared/serverGuard.js"></script>
+<script>
+function togglePassword(fieldId, eyeIcon) {
+    var field = document.getElementById(fieldId);
+
+    if (field.type === "password") {
+        field.type = "text";
+        eyeIcon.textContent = "👁";
+    } else {
+        field.type = "password";
+        eyeIcon.textContent = "👁";
+    }
+}
+
+function validatePassword() {
+    var pass = document.getElementById("password").value;
+    var confirmPass = document.getElementById("confirmPassword").value;
+
+    if (pass !== confirmPass) {
+        alert("Passwords do not match!");
+        return false;
+    }
+
+    alert("Account Created Successfully!");
+    window.location.href = "login.html";  // Link to login page
+    return false;
+}
+</script>
+
+</body>
+</html>
