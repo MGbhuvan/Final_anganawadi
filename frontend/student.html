@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Student Details - Poshan Abhiyan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +117,7 @@
         }
 
         .form-card-title {
-            font-size: 1rem; font-weight: 800; color: var(--navy);
+            font-size: 1.12rem; font-weight: 800; color: var(--navy);
             margin-bottom: 1.3rem;
             display: flex; align-items: center; gap: 10px;
         }
@@ -266,11 +266,28 @@
             justify-content: space-between;
             padding: 1.1rem 1.6rem;
             border-bottom: 1px solid #F3F4F6;
+            flex-wrap: wrap; gap: 0.7rem;
         }
 
         .table-toolbar-title {
             font-size: 1rem; font-weight: 800; color: var(--navy);
         }
+
+        .toolbar-right {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        }
+
+        /* ── GENDER FILTER BUTTONS ── */
+        .gender-filter-btn {
+            font-size: 0.72rem; padding: 5px 13px; border-radius: 20px;
+            cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700;
+            border: 1.5px solid #E5E7EB; background: var(--white); color: #6B7280;
+            transition: all 0.18s; line-height: 1.4;
+        }
+        .gender-filter-btn:hover { border-color: #D1D5DB; background: #F9FAFB; }
+        .gender-filter-btn.all.active   { background: var(--navy);  color: var(--white); border-color: var(--navy); }
+        .gender-filter-btn.male.active  { background: #378ADD; color: var(--white); border-color: #378ADD; }
+        .gender-filter-btn.female.active{ background: #D64E87; color: var(--white); border-color: #D64E87; }
 
         .rec-badge {
             font-size: 0.75rem; font-weight: 700;
@@ -280,7 +297,7 @@
 
         .table-wrap { overflow-x: auto; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.11rem; }
 
         thead tr {
             background: linear-gradient(135deg, var(--navy) 0%, #1a3a2a 100%);
@@ -288,7 +305,7 @@
 
         thead th {
             color: rgba(255,255,255,0.85);
-            font-size: 0.68rem; font-weight: 700;
+            font-size: 0.91rem; font-weight: 700;
             letter-spacing: 0.1em; text-transform: uppercase;
             padding: 13px 15px; text-align: left; white-space: nowrap;
         }
@@ -309,6 +326,7 @@
 
         tbody td {
             padding: 12px 15px;
+            font-size: 1.09rem;
             color: #374151; vertical-align: middle;
         }
 
@@ -519,7 +537,7 @@
 <div class="topbar">
     <div class="topbar-left">
         <a href="home.html" class="back-btn">&#8592; Home</a>
-        <div class="topbar-title">Student Details Module</div>
+        <div class="topbar-title">Student Details</div>
     </div>
     <div class="topbar-right">Poshan Abhiyan</div>
 </div>
@@ -597,7 +615,7 @@
 
     <!-- FORM CARD -->
     <div class="form-card">
-        <div class="form-card-title">Register New Student</div>
+        <div class="form-card-title">Register New Record</div>
 
         <div class="form-grid">
             <!-- Student ID with STUD prefix -->
@@ -651,13 +669,20 @@
     <div class="table-card">
         <div class="table-toolbar">
             <div class="table-toolbar-title">All Records</div>
-            <span class="rec-badge" id="recBadge">0 records</span>
+            <div class="toolbar-right">
+                <!-- Gender filter buttons -->
+                <button class="gender-filter-btn all active" id="gfAll"    onclick="filterGender('All', this)">All</button>
+                <button class="gender-filter-btn male"       id="gfMale"   onclick="filterGender('Male', this)">👦 Male <span id="gfMaleCount">0</span></button>
+                <button class="gender-filter-btn female"     id="gfFemale" onclick="filterGender('Female', this)">👧 Female <span id="gfFemaleCount">0</span></button>
+                <!-- Records badge -->
+                <span class="rec-badge" id="recBadge">0 records</span>
+            </div>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th>Student ID</th>
+                        <th>ID</th>
                         <th>Full Name</th>
                         <th>Parent's Name</th>
                         <th>Date of Birth</th>
@@ -673,8 +698,66 @@
 
 </div>
 
+<script src="js/shared/authGuard.js"></script>
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script type="module" src="js/pages/student.page.js"></script>
+
+<!-- Gender filter logic -->
+<script>
+    // Filter table rows by gender
+    function filterGender(gender, btn) {
+        document.querySelectorAll('.gender-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const rows = document.querySelectorAll('#stBody tr');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const pill = row.querySelector('.gender-pill');
+            if (!pill) { row.style.display = ''; visible++; return; }
+            const rowGender = pill.textContent.trim();
+            const show = gender === 'All' || rowGender === gender;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('recBadge').textContent = visible + ' records';
+    }
+
+    // Recalculate male / female counts and update badge
+    function updateGenderCounts() {
+        const rows = document.querySelectorAll('#stBody tr');
+        let male = 0, female = 0, total = 0;
+
+        rows.forEach(row => {
+            total++;
+            const pill = row.querySelector('.gender-pill');
+            if (!pill) return;
+            const g = pill.textContent.trim();
+            if (g === 'Male')   male++;
+            else if (g === 'Female') female++;
+        });
+
+        document.getElementById('gfMaleCount').textContent   = male;
+        document.getElementById('gfFemaleCount').textContent = female;
+
+        // Also refresh visible count on the badge based on active filter
+        const activeBtn = document.querySelector('.gender-filter-btn.active');
+        const activeGender = activeBtn ? (activeBtn.id === 'gfAll' ? 'All' : activeBtn.id === 'gfMale' ? 'Male' : 'Female') : 'All';
+        const visibleCount = activeGender === 'All' ? total
+            : activeGender === 'Male' ? male : female;
+        document.getElementById('recBadge').textContent = visibleCount + ' records';
+    }
+
+    // Watch tbody for any row additions / removals
+    document.addEventListener('DOMContentLoaded', () => {
+        const tbody = document.getElementById('stBody');
+        if (tbody) {
+            new MutationObserver(updateGenderCounts)
+                .observe(tbody, { childList: true, subtree: true });
+        }
+    });
+</script>
 
 </body>
 </html>

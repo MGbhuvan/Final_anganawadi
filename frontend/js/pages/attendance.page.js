@@ -40,6 +40,10 @@ function checkHoliday(dateStr) {
 
 function normalizeDate(dateStr) {
   if (!dateStr) return "";
+  if (typeof dateStr === 'string' && dateStr.length >= 10) {
+    const prefix = dateStr.slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(prefix)) return prefix;
+  }
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
   const y = d.getFullYear();
@@ -143,6 +147,7 @@ async function loadStudents() {
   const isTargetHoliday = checkHoliday(targetDate);
 
   let allAttendance = await apiRequest("/attendance");
+  if (!Array.isArray(allAttendance)) allAttendance = [];
 
   if (isCurrentDay && !isTargetHoliday) {
     const allRegisteredStudents = await apiRequest("/students");
@@ -252,16 +257,328 @@ async function addStudent() {
   }
 }
 
+function printAttendance() {
+  const dtInput = document.getElementById("aDt");
+  const targetDate = dtInput ? dtInput.value : new Date().toISOString().slice(0, 10);
+  const dateObj = new Date(targetDate);
+  const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  if (!students.length) {
+    alert("No records to print for this date.");
+    return;
+  }
+
+  let printHtml = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <title>Attendance Report - ${formattedDate}</title>
+      <style>
+          @page { size: A4; margin: 20mm; }
+          body { font-family: 'Arial', sans-serif; color: #111; }
+          .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+          h1 { margin: 0 0 10px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+          .date-display { font-size: 16px; font-weight: bold; color: #555; }
+          .stats { display: flex; justify-content: space-around; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
+          th { background-color: #f0f0f0; }
+          .status-Present { color: #138808; font-weight: bold; }
+          .status-Absent { color: #D32F2F; font-weight: bold; }
+          .status-Not { color: #F57C00; font-weight: bold; }
+          .footer { margin-top: 50px; text-align: right; font-size: 14px; font-style: italic; }
+      </style>
+  </head>
+  <body>
+      <div class="header">
+          <h1>Student Attendance Report</h1>
+          <div class="date-display">${formattedDate}</div>
+      </div>
+      
+      <div class="stats">
+          <span>Total: ${students.length}</span>
+          <span style="color:#138808">Present: ${students.filter(s => s.status === 'Present').length}</span>
+          <span style="color:#D32F2F">Absent: ${students.filter(s => s.status === 'Absent').length}</span>
+      </div>
+
+      <table>
+          <thead>
+              <tr>
+                  <th>S.No</th>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Attendance Status</th>
+              </tr>
+          </thead>
+          <tbody>
+  `;
+
+  students.forEach((s, index) => {
+      const sClass = s.status === 'Present' ? 'status-Present' : (s.status === 'Absent' ? 'status-Absent' : 'status-Not');
+      printHtml += `
+          <tr>
+              <td>${index + 1}</td>
+              <td>${s.student_code}</td>
+              <td>${s.student_name}</td>
+              <td class="${sClass}">${s.status}</td>
+          </tr>
+      `;
+  });
+
+  printHtml += `
+          </tbody>
+      </table>
+      
+      <div class="footer">
+          <p>Authorized Signature: ______________________</p>
+      </div>
+  </body>
+  </html>
+  `;
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) { alert("Please allow popups to print the report."); return; }
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+  }, 250);
+}
+
 // ── Input Restrictions ────────────────────────────────────────────────────────
 
 document.getElementById("aDt").addEventListener("change", loadStudents);
 
+// ── Monthly Attendance ────────────────────────────────────────────────────────
+
+let monthlyData = null; // stores last loaded monthly data
+
+function switchTab(tab) {
+  const daily   = document.getElementById("dailyPanel");
+  const monthly = document.getElementById("monthlyPanel");
+  const tDaily  = document.getElementById("tabDaily");
+  const tMonthly= document.getElementById("tabMonthly");
+
+  if (tab === "daily") {
+    daily.style.display   = "block";
+    monthly.style.display = "none";
+    tDaily.classList.add("active");
+    tMonthly.classList.remove("active");
+  } else {
+    daily.style.display   = "none";
+    monthly.style.display = "block";
+    tDaily.classList.remove("active");
+    tMonthly.classList.add("active");
+  }
+}
+
+function isSunday(year, mon, day) {
+  return new Date(year, mon - 1, day).getDay() === 0;
+}
+
+const GOVT_HOLIDAYS = ["01-26", "08-15", "10-02"];
+function isHoliday(year, mon, day) {
+  if (isSunday(year, mon, day)) return true;
+  const md = `${String(mon).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  return GOVT_HOLIDAYS.includes(md);
+}
+
+async function loadMonthlyAttendance() {
+  const monthInput = document.getElementById("mMonth");
+  const month = monthInput ? monthInput.value : "";
+  if (!month) { alert("Please select a month."); return; }
+
+  const container = document.getElementById("monthlyTableContainer");
+  container.innerHTML = `<div class="monthly-empty">Loading...</div>`;
+
+  try {
+    const data = await apiRequest(`/attendance/monthly?month=${encodeURIComponent(month)}`);
+    monthlyData = data;
+    renderMonthlyTable(data);
+  } catch(err) {
+    container.innerHTML = `<div class="monthly-empty" style="color:#E24B4A">${err.message}</div>`;
+  }
+}
+
+function renderMonthlyTable(data) {
+  const container = document.getElementById("monthlyTableContainer");
+  const monthNames = ["January","February","March","April","May","June",
+                      "July","August","September","October","November","December"];
+  const title = `${monthNames[data.month_num - 1]} ${data.year}`;
+  document.getElementById("monthlyTitle").textContent = `Attendance Register — ${title}`;
+
+  if (!data.students || data.students.length === 0) {
+    container.innerHTML = `<div class="monthly-empty">No attendance records found for ${title}.</div>`;
+    return;
+  }
+
+  // Header
+  let html = `<table><thead><tr>
+    <th class="col-id" style="text-align:left;padding-left:14px;">ID</th>
+    <th class="col-name">Student Name</th>`;
+  data.days.forEach(d => {
+    const holiday = isHoliday(data.year, data.month_num, d);
+    const style = holiday ? 'style="background:rgba(192,132,252,0.18);"' : '';
+    html += `<th ${style}>${d}</th>`;
+  });
+  html += `<th class="col-total">P</th><th class="col-total" style="color:#E24B4A;">A</th></tr></thead><tbody>`;
+
+  // Rows
+  data.students.forEach(stu => {
+    let presentCount = 0, absentCount = 0;
+    html += `<tr><td class="col-id">${stu.student_code}</td><td class="col-name">${stu.student_name}</td>`;
+    data.days.forEach(d => {
+      const holiday = isHoliday(data.year, data.month_num, d);
+      const status  = stu.attendance[d];
+      if (holiday) {
+        html += `<td class="cell-h">H</td>`;
+      } else if (status === "Present") {
+        presentCount++;
+        html += `<td class="cell-p">P</td>`;
+      } else if (status === "Absent") {
+        absentCount++;
+        html += `<td class="cell-a">A</td>`;
+      } else {
+        html += `<td class="cell-nm">-</td>`;
+      }
+    });
+    html += `<td class="col-total">${presentCount}</td>
+             <td class="col-total" style="color:#E24B4A;">${absentCount}</td></tr>`;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+function printMonthlyAttendance() {
+  if (!monthlyData) { alert("Please load a month first."); return; }
+  const data = monthlyData;
+  const monthNames = ["January","February","March","April","May","June",
+                      "July","August","September","October","November","December"];
+  const title = `${monthNames[data.month_num - 1]} ${data.year}`;
+
+  if (!data.students || data.students.length === 0) {
+    alert("No records to print."); return;
+  }
+
+  // Style constants for print header
+  const COL_ID_STYLE   = "border:1px solid #555;padding:4px 6px;font-size:8pt;text-align:left;white-space:nowrap;background:#1e1b4b;color:#fff;";
+  const COL_NAME_STYLE = "border:1px solid #555;padding:4px 8px;font-size:8pt;text-align:left;min-width:130px;background:#1e1b4b;color:#fff;";
+  const DAY_TH_STYLE   = "border:1px solid #555;padding:4px 3px;font-size:7.5pt;text-align:center;min-width:18px;background:#1e1b4b;color:#fff;";
+
+  // Build header row
+  let headCols = `<th style="${COL_ID_STYLE}">ID</th><th style="${COL_NAME_STYLE}">Student Name</th>`;
+  data.days.forEach(d => {
+    const h = isHoliday(data.year, data.month_num, d);
+    headCols += `<th style="${DAY_TH_STYLE}${h ? 'background:#ede9fe;' : ''}">${d}</th>`;
+  });
+  headCols += `<th style="${DAY_TH_STYLE}color:#7C3AED;">P</th>
+               <th style="${DAY_TH_STYLE}color:#D32F2F;">A</th>`;
+
+  // Rebuild with correct style refs
+  let headColsFixed = `<th style="${COL_ID_STYLE}">ID</th><th style="${COL_NAME_STYLE}">Student Name</th>`;
+  data.days.forEach(d => {
+    const h = isHoliday(data.year, data.month_num, d);
+    headColsFixed += `<th style="${DAY_TH_STYLE}${h ? 'background:#5b21b6;' : ''}">${d}</th>`;
+  });
+  headColsFixed += `<th style="${DAY_TH_STYLE}">P</th><th style="${DAY_TH_STYLE}">A</th>`;
+
+  // Rows
+  let rowsHtml = "";
+  data.students.forEach((stu, idx) => {
+    let p = 0, a = 0;
+    let cells = "";
+    const rowBg = idx % 2 === 0 ? "#fff" : "#f9f5ff";
+    const TD = `border:1px solid #ccc;padding:3px;font-size:7.5pt;text-align:center;`;
+    data.days.forEach(d => {
+      const h = isHoliday(data.year, data.month_num, d);
+      const s = stu.attendance[d];
+      if (h) {
+        cells += `<td style="${TD}background:#ede9fe;color:#7c3aed;">H</td>`;
+      } else if (s === "Present") {
+        p++; cells += `<td style="${TD}color:#138808;font-weight:bold;">P</td>`;
+      } else if (s === "Absent") {
+        a++; cells += `<td style="${TD}color:#D32F2F;font-weight:bold;">A</td>`;
+      } else {
+        cells += `<td style="${TD}color:#bbb;">-</td>`;
+      }
+    });
+    rowsHtml += `<tr style="background:${rowBg}">
+      <td style="border:1px solid #ccc;padding:3px 6px;font-size:7.5pt;color:#5b21b6;font-weight:bold;">${stu.student_code}</td>
+      <td style="border:1px solid #ccc;padding:3px 8px;font-size:8pt;font-weight:600;white-space:nowrap;">${stu.student_name}</td>
+      ${cells}
+      <td style="border:1px solid #ccc;padding:3px;font-size:7.5pt;text-align:center;font-weight:bold;color:#7C3AED;">${p}</td>
+      <td style="border:1px solid #ccc;padding:3px;font-size:7.5pt;text-align:center;font-weight:bold;color:#D32F2F;">${a}</td>
+    </tr>`;
+  });
+
+  const printHtml = `<!DOCTYPE html><html><head><title>Attendance Register — ${title}</title>
+  <style>
+    @page { size: A4 landscape; margin: 12mm 10mm; }
+    body { font-family: Arial, sans-serif; color: #111; }
+    h2 { text-align:center; font-size:14pt; margin:0 0 2px; letter-spacing:1px; }
+    .sub { text-align:center; font-size:9pt; color:#555; margin-bottom:10px; }
+    .legend { text-align:right; font-size:7.5pt; margin-bottom:6px; color:#333; }
+    table { width:100%; border-collapse:collapse; }
+    .footer { margin-top:24px; display:flex; justify-content:space-between; font-size:8.5pt; }
+  </style></head><body>
+  <h2>POSHAN ABHIYAN — Monthly Attendance Register</h2>
+  <div class="sub">${title}</div>
+  <div class="legend">P = Present &nbsp;|&nbsp; A = Absent &nbsp;|&nbsp; H = Holiday/Sunday &nbsp;|&nbsp; – = Not Marked</div>
+  <table><thead><tr>${headColsFixed}</tr></thead><tbody>${rowsHtml}</tbody></table>
+  <div class="footer">
+    <span>Total Students: ${data.students.length}</span>
+    <span>Authorized Signature: ______________________</span>
+  </div>
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  if (!w) { alert("Please allow popups to print the report."); return; }
+  w.document.write(printHtml);
+  w.document.close();
+  w.focus();
+  setTimeout(() => { w.print(); w.close(); }, 350);
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-window.filterTable = filterTable;
-window.markAttendance = markAttendance;
-window.addStudent = addStudent;
-window.deleteStudent = deleteStudent;
+// Opens Monthly View tab pre-loaded with the month of the currently selected date
+function viewMonthlyFromDate() {
+  const dtInput = document.getElementById("aDt");
+  const dateVal = dtInput && dtInput.value ? dtInput.value : new Date().toISOString().slice(0, 10);
+  // Extract YYYY-MM from the date
+  const month = dateVal.slice(0, 7);
+
+  // Set the month picker in the monthly panel
+  const mInput = document.getElementById("mMonth");
+  if (mInput) mInput.value = month;
+
+  // Switch to monthly tab
+  switchTab('monthly');
+
+  // Auto-load the register
+  loadMonthlyAttendance();
+}
+
+window.filterTable            = filterTable;
+window.markAttendance         = markAttendance;
+window.addStudent             = addStudent;
+window.printAttendance        = printAttendance;
+window.switchTab              = switchTab;
+window.loadMonthlyAttendance  = loadMonthlyAttendance;
+window.printMonthlyAttendance = printMonthlyAttendance;
+window.viewMonthlyFromDate    = viewMonthlyFromDate;
+
+// Default month picker to current month
+(function initMonthPicker() {
+  const now = new Date();
+  const y   = now.getFullYear();
+  const m   = String(now.getMonth() + 1).padStart(2, '0');
+  const el  = document.getElementById("mMonth");
+  if (el) el.value = `${y}-${m}`;
+})();
 
 loadStudents().catch((err) => {
   showAddMsg(err.message || "Failed to load attendance.", "error");

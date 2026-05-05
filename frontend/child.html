@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Child Details - Poshan Abhiyan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -184,16 +184,6 @@
             flex: 1;
         }
 
-        .bmi-preview {
-            grid-column: span 3;
-            background: #FFFBF0; border: 1.5px solid #FAEEDA;
-            border-radius: 10px; padding: 10px 16px;
-            font-size: 0.82rem; color: #633806; font-weight: 600;
-            display: none;
-        }
-
-        .bmi-preview.show { display: block; }
-
         .form-actions {
             display: flex; justify-content: flex-end;
             align-items: center; gap: 10px;
@@ -245,7 +235,7 @@
             padding: 1.2rem 1.6rem; border-bottom: 1px solid #F3F4F6;
         }
 
-        .table-toolbar-title { font-size: 1rem; font-weight: 800; color: var(--navy); }
+        .table-toolbar-title { font-size: 1.12rem; font-weight: 800; color: var(--navy); }
 
         .rec-badge {
             font-size: 0.75rem; font-weight: 700;
@@ -255,13 +245,13 @@
 
         .table-wrap { overflow-x: auto; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.11rem; }
 
         thead tr { background: linear-gradient(135deg, var(--navy) 0%, #1a2a4a 100%); }
 
         thead th {
             color: rgba(255,255,255,0.85);
-            font-size: 0.68rem; font-weight: 700;
+            font-size: 0.91rem; font-weight: 700;
             letter-spacing: 0.1em; text-transform: uppercase;
             padding: 13px 15px; text-align: left; white-space: nowrap;
         }
@@ -280,7 +270,7 @@
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: #FFFBF0; }
 
-        tbody td { padding: 12px 15px; color: #374151; vertical-align: middle; }
+        tbody td { padding: 12px 15px; font-size: 1.09rem; color: #374151; vertical-align: middle; }
 
         .ch-id {
             display: inline-block; padding: 3px 9px;
@@ -400,7 +390,6 @@
         @media (max-width: 700px) {
             .stats-row { grid-template-columns: 1fr; }
             .form-grid, .modal-grid  { grid-template-columns: 1fr; }
-            .bmi-preview { grid-column: span 1; }
         }
     </style>
 </head>
@@ -409,7 +398,7 @@
 <div class="topbar">
     <div class="topbar-left">
         <a href="home.html" class="back-btn">&#8592; Home</a>
-        <div class="topbar-title">Child Details Module</div>
+        <div class="topbar-title">Child Details</div>
     </div>
     <div class="topbar-right">Poshan Abhiyan</div>
 </div>
@@ -435,7 +424,10 @@
             </div>
             <div class="field">
                 <label>Mother ID (PW ID)</label>
-                <input type="text" id="mMid"/>
+                <div class="id-wrapper">
+                    <span class="id-prefix">PW</span>
+                    <input type="text" id="mMid" placeholder="e.g. 001" inputmode="numeric"/>
+                </div>
             </div>
             <div class="field">
                 <label>Age (months)</label>
@@ -453,7 +445,6 @@
                 <label>Vaccination Status</label>
                 <select id="mVacc">
                     <option value="Complete">Complete</option>
-                    <option value="Partial">Partial</option>
                     <option value="Not Done">Not Done</option>
                 </select>
             </div>
@@ -502,7 +493,10 @@
             </div>
             <div class="field">
                 <label>Mother ID (PW ID)</label>
-                <input type="text" id="fMid" placeholder="e.g. PW001"/>
+                <div class="id-wrapper">
+                    <span class="id-prefix">PW</span>
+                    <input type="text" id="fMid" placeholder="e.g. 001" inputmode="numeric"/>
+                </div>
             </div>
             <div class="field">
                 <label>Age (months)</label>
@@ -510,23 +504,21 @@
             </div>
             <div class="field">
                 <label>Weight (kg)</label>
-                <input type="number" id="fWeight" placeholder="e.g. 12.5" step="0.1" oninput="calcBMI()"/>
+                <input type="number" id="fWeight" placeholder="e.g. 12.5" step="0.1"/>
             </div>
             <div class="field">
                 <label>Height (cm)</label>
-                <input type="number" id="fHeight" placeholder="e.g. 85" step="0.1" oninput="calcBMI()"/>
+                <input type="number" id="fHeight" placeholder="e.g. 85" step="0.1"/>
             </div>
             <div class="field">
                 <label>Vaccination Status</label>
                 <select id="fVacc">
                     <option value="">-- Select --</option>
                     <option value="Complete">Complete</option>
-                    <option value="Partial">Partial</option>
                     <option value="Not Done">Not Done</option>
                 </select>
             </div>
 
-            <div class="bmi-preview" id="bmiPreview"></div>
         </div>
 
         <div class="form-actions">
@@ -553,7 +545,6 @@
                         <th>Age</th>
                         <th>Weight</th>
                         <th>Height</th>
-                        <th>BMI Status</th>
                         <th>Vaccination</th>
                         <th>Action</th>
                     </tr>
@@ -565,6 +556,7 @@
 
 </div>
 
+<script src="js/shared/authGuard.js"></script>
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script type="module" src="js/pages/child.page.js"></script>
 

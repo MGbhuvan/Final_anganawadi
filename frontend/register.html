@@ -1,186 +1,771 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REGISTER</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>POSHAN ABHIYAN - Register</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="static/fonts.css" rel="stylesheet"/>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    background: url("static/PA.jpeg") no-repeat center center fixed;
-    background-size: cover;
-    position: relative;
-}
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Dark overlay */
-body::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    top: 0;
-    left: 0;
-    z-index: 0;
-}
+        :root {
+            --saffron:    #FF6B00;
+            --green:      #138808;
+            --deep-green: #0a5e05;
+            --gold:       #F5A623;
+            --navy:       #141e30;
+            --navy2:      #243b55;
+            --white:      #FFFFFF;
+            --red:        #DC2626;
+        }
 
-.container {
-    position: relative;
-    z-index: 1;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    width: min(360px, 100%);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-    text-align: center;
-}
+        .tricolor-top {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(90deg,
+                var(--saffron) 0% 33%,
+                var(--white)   33% 66%,
+                var(--green)   66% 100%
+            );
+            z-index: 999;
+        }
 
-h2 {
-    margin-bottom: 25px;
-    font-weight: bold;
-    color: #243b55;
-}
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+            background: linear-gradient(135deg, #f7efe2 0%, #eef7ec 55%, #fef7ea 100%);
+        }
 
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-    position: relative;
-}
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg,
+                rgba(255,248,235,0.93) 0%,
+                rgba(240,255,240,0.92) 50%,
+                rgba(255,240,220,0.93) 100%
+            );
+            z-index: 0;
+        }
 
-.input-group label {
-    font-weight: bold;
-    font-size: 14px;
-}
+        .blob {
+            position: fixed; border-radius: 50%;
+            filter: blur(70px); opacity: 0.18;
+            z-index: 0; pointer-events: none;
+        }
+        .blob1 { width:380px; height:380px; background:var(--saffron); top:-100px; left:-100px; }
+        .blob2 { width:300px; height:300px; background:var(--green);   bottom:-80px; right:-80px; }
+        .blob3 { width:200px; height:200px; background:var(--gold);    top:50%; left:60%; }
 
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    padding-right: 40px;
-    margin-top: 5px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 14px;
-}
+        /* CARD */
+        .card-wrapper {
+            position: relative; z-index: 10;
+            display: flex; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.8);
+            animation: cardIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+            max-width: 860px; width: 95%;
+        }
 
-.eye {
-    position: absolute;
-    right: 12px;
-    top: 38px;
-    cursor: pointer;
-    font-size: 18px;
-}
+        @keyframes cardIn {
+            from { opacity:0; transform:translateY(40px) scale(0.97); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
 
-/* Stylish Button */
-button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 30px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(45deg, #ff9933, #ff6600);
-    cursor: pointer;
-    transition: 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255,102,0,0.4);
-}
+        /* LEFT PANEL */
+        .left-panel {
+            width: 310px; flex-shrink: 0;
+            background: linear-gradient(160deg, #fff8f0 0%, #f0fff4 100%);
+            padding: 2.5rem 2rem;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            border-right: 1px solid rgba(0,0,0,0.06);
+        }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,102,0,0.6);
-}
+        .left-panel::before {
+            content:''; position:absolute;
+            width:280px; height:280px; border-radius:50%;
+            background:radial-gradient(circle, rgba(255,107,0,0.10), transparent 70%);
+            top:-60px; left:-60px;
+        }
+        .left-panel::after {
+            content:''; position:absolute;
+            width:220px; height:220px; border-radius:50%;
+            background:radial-gradient(circle, rgba(19,136,8,0.10), transparent 70%);
+            bottom:-50px; right:-50px;
+        }
 
-.login-link {
-    margin-top: 20px;
-    font-weight: bold;
-}
+        .mandala-ring {
+            position:absolute; width:180px; height:180px;
+            border:1px solid rgba(245,166,35,0.15); border-radius:50%;
+            top:50%; left:50%; transform:translate(-50%,-50%);
+            animation:spin 20s linear infinite;
+        }
+        .mandala-ring::before {
+            content:''; position:absolute; inset:12px;
+            border:1px dashed rgba(245,166,35,0.12); border-radius:50%;
+        }
+        @keyframes spin { to { transform:translate(-50%,-50%) rotate(360deg); } }
 
-.login-link a {
-    text-decoration: none;
-    color: #243b55;
-}
+        .logo-wrap { position:relative; z-index:2; margin-bottom:1.4rem; width:110px; height:110px; }
 
-.login-link a:hover {
-    text-decoration: underline;
-}
+        .logo-glow {
+            position:absolute; inset:-4px; border-radius:50%;
+            background:conic-gradient(var(--saffron), var(--gold), var(--green), var(--gold), var(--saffron));
+            animation:rotateBorder 4s linear infinite; z-index:0;
+        }
+        @keyframes rotateBorder { to { transform:rotate(360deg); } }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 24px 18px;
-        border-radius: 10px;
-    }
-}
-</style>
+        .logo-inner {
+            position:absolute; inset:4px; z-index:1;
+            border-radius:50%; overflow:hidden;
+            border:3px solid #fff;
+            box-shadow:0 6px 20px rgba(0,0,0,0.12);
+        }
+        .logo-inner img { width:100%; height:100%; object-fit:cover; display:block; }
+
+        .panel-title {
+            font-family:'Playfair Display', serif;
+            font-size:1.55rem; font-weight:900;
+            color:var(--navy); text-align:center;
+            line-height:1.2; position:relative; z-index:2;
+        }
+        .panel-title span {
+            display:block; font-size:0.75rem;
+            font-family:'Nunito', sans-serif; font-weight:600;
+            color:rgba(0,0,0,0.38); letter-spacing:0.16em;
+            text-transform:uppercase; margin-top:0.3rem;
+        }
+
+        .divider-gold {
+            width:50px; height:2px;
+            background:linear-gradient(90deg, var(--saffron), var(--gold), var(--green));
+            border-radius:2px; margin:1.1rem auto;
+            position:relative; z-index:2;
+        }
+
+        .steps { list-style:none; position:relative; z-index:2; width:100%; }
+        .steps li {
+            font-size:0.86rem; color:rgba(0,0,0,0.55);
+            padding:0.45rem 0; display:flex; align-items:flex-start;
+            gap:0.65rem; border-bottom:1px solid rgba(0,0,0,0.05);
+        }
+        .steps li:last-child { border-bottom:none; }
+        .step-num {
+            min-width:20px; height:20px;
+            background:linear-gradient(135deg, var(--saffron), var(--gold));
+            border-radius:50%; font-size:0.63rem; font-weight:800;
+            color:white; display:flex; align-items:center; justify-content:center;
+            flex-shrink:0; margin-top:1px;
+        }
+
+        /* ── SECURITY QUESTIONS MODAL ── */
+        .sq-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(20,30,48,0.55);
+            backdrop-filter:blur(6px);
+            z-index:1000;
+            align-items:center; justify-content:center; padding:1rem;
+        }
+        .sq-overlay.open { display:flex; animation:sqFadeIn 0.25s ease both; }
+        @keyframes sqFadeIn { from{opacity:0} to{opacity:1} }
+
+        .sq-card {
+            background:#fff; border-radius:22px;
+            width:100%; max-width:460px;
+            padding:2.4rem 2.2rem 2rem;
+            box-shadow:0 30px 80px rgba(0,0,0,0.18);
+            position:relative;
+            animation:sqSlideUp 0.32s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        @keyframes sqSlideUp {
+            from{opacity:0;transform:translateY(30px) scale(0.97)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+
+        .sq-title {
+            font-family:'Playfair Display',serif;
+            font-size:1.5rem; font-weight:900; color:var(--navy);
+            margin-bottom:0.25rem;
+        }
+        .sq-sub { font-size:0.88rem; color:#8A94A6; margin-bottom:1.4rem; line-height:1.5; }
+
+        .sq-icon {
+            width:52px; height:52px; border-radius:14px;
+            background:linear-gradient(135deg,rgba(19,136,8,0.12),rgba(19,136,8,0.06));
+            display:flex; align-items:center; justify-content:center; margin-bottom:1rem;
+        }
+        .sq-icon svg { width:26px; height:26px; stroke:var(--green); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+        .sq-close {
+            position:absolute; top:1rem; right:1rem;
+            background:none; border:none; cursor:pointer; color:#BCC0C9;
+            padding:4px; border-radius:8px; display:flex; align-items:center;
+            transition:color 0.2s,background 0.2s;
+        }
+        .sq-close:hover { color:var(--navy); background:#F3F4F6; }
+        .sq-close svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; }
+
+        .sq-input-wrap { position:relative; margin-bottom:0.3rem; }
+        .sq-input-wrap .sq-icon-i {
+            position:absolute; left:13px; top:50%;
+            transform:translateY(-50%);
+            pointer-events:none; color:#BCC0C9; display:flex; align-items:center; transition:color 0.2s;
+        }
+        .sq-input-wrap .sq-icon-i svg { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+        .sq-input-wrap input {
+            width:100%; padding:0.74rem 0.9rem 0.74rem 2.55rem;
+            border:2px solid #E8EAED; border-radius:12px;
+            font-size:0.95rem; font-family:'Nunito',sans-serif;
+            color:var(--navy); background:#F8F9FC; outline:none;
+            transition:border-color 0.22s,background 0.22s,box-shadow 0.22s;
+        }
+        .sq-input-wrap input::placeholder { color:#C4C8D0; }
+        .sq-input-wrap input:focus {
+            border-color:var(--green); background:#fff;
+            box-shadow:0 0 0 4px rgba(19,136,8,0.10);
+        }
+        .sq-input-wrap:focus-within .sq-icon-i { color:var(--green); }
+
+        .sq-label {
+            display:block; font-size:0.82rem; font-weight:700;
+            letter-spacing:0.07em; text-transform:uppercase;
+            color:var(--navy2); margin-bottom:0.38rem;
+        }
+        .sq-err {
+            display:none; color:var(--red);
+            font-size:0.74rem; font-weight:700; margin-bottom:0.6rem;
+        }
+        .sq-err.show { display:block; }
+
+        .btn-sq-save {
+            width:100%; padding:0.88rem; border:none; border-radius:12px;
+            font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700;
+            letter-spacing:0.06em; cursor:pointer; color:#fff; margin-top:0.8rem;
+            background:linear-gradient(135deg,var(--green) 0%,var(--deep-green) 100%);
+            box-shadow:0 6px 20px rgba(19,136,8,0.28);
+            transition:transform 0.15s,box-shadow 0.15s; position:relative; overflow:hidden;
+        }
+        .btn-sq-save::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+            transform:translateX(-100%); transition:transform 0.55s;
+        }
+        .btn-sq-save:hover::before { transform:translateX(100%); }
+        .btn-sq-save:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(19,136,8,0.36); }
+        .btn-sq-save:active { transform:translateY(0); }
+        .btn-sq-save:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+
+        .badge {
+            margin-top:1.4rem; position:relative; z-index:2;
+            font-size:0.72rem; color:rgba(0,0,0,0.30); text-align:center;
+            letter-spacing:0.1em; text-transform:uppercase;
+            border:1px solid rgba(0,0,0,0.08); border-radius:20px;
+            padding:0.35rem 0.9rem; background:rgba(255,255,255,0.6);
+        }
+
+        /* RIGHT PANEL */
+        .right-panel {
+            flex:1; background:rgba(255,255,255,0.97);
+            padding:2.2rem 2.4rem;
+            display:flex; flex-direction:column; justify-content:center;
+            position:relative;
+        }
+        .right-panel::before {
+            content:''; position:absolute;
+            top:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg, var(--saffron), var(--gold), var(--green));
+        }
+
+        .greet {
+            font-size:0.86rem; font-weight:700;
+            letter-spacing:0.16em; text-transform:uppercase;
+            color:var(--saffron); margin-bottom:0.3rem;
+        }
+        .form-heading {
+            font-family:'Playfair Display', serif;
+            font-size:2rem; font-weight:900;
+            color:var(--navy); line-height:1.15; margin-bottom:0.2rem;
+        }
+        .form-sub { font-size:0.91rem; color:#8A94A6; margin-bottom:1.4rem; }
+
+        /* GRID ROWS */
+        .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.9rem; }
+
+        .form-group { margin-bottom:0.85rem; }
+        .form-group label {
+            display:block; font-size:0.82rem; font-weight:700;
+            letter-spacing:0.07em; text-transform:uppercase;
+            color:var(--navy2); margin-bottom:0.35rem;
+        }
+
+        .input-wrap { position:relative; }
+
+        .input-wrap .i-icon {
+            position:absolute; left:13px; top:50%;
+            transform:translateY(-50%);
+            pointer-events:none; color:#BCC0C9;
+            transition:color 0.2s; display:flex; align-items:center;
+        }
+        .input-wrap .i-icon svg {
+            width:16px; height:16px;
+            stroke:currentColor; fill:none;
+            stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+        }
+
+        .input-wrap input,
+        .input-wrap select {
+            width:100%;
+            padding:0.72rem 0.85rem 0.72rem 2.5rem;
+            border:2px solid #E8EAED; border-radius:12px;
+            font-size:0.94rem; font-family:'Nunito', sans-serif;
+            color:var(--navy); background:#F8F9FC;
+            outline:none; appearance:none; -webkit-appearance:none;
+            transition:border-color 0.22s, background 0.22s, box-shadow 0.22s;
+        }
+        .input-wrap input::placeholder { color:#C4C8D0; }
+        .input-wrap input:focus,
+        .input-wrap select:focus {
+            border-color:var(--green); background:var(--white);
+            box-shadow:0 0 0 4px rgba(19,136,8,0.10);
+        }
+        .input-wrap:focus-within .i-icon { color:var(--green); }
+
+        .sel-arrow {
+            position:absolute; right:12px; top:50%;
+            transform:translateY(-50%);
+            pointer-events:none; color:#BCC0C9;
+            display:flex; align-items:center;
+        }
+        .sel-arrow svg {
+            width:14px; height:14px; stroke:currentColor; fill:none;
+            stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;
+        }
+
+        .eye {
+            position:absolute; right:12px; top:50%;
+            transform:translateY(-50%);
+            cursor:pointer; border:none; background:none;
+            padding:0; color:#BCC0C9; transition:color 0.2s;
+            display:flex; align-items:center;
+        }
+        .eye:hover { color:var(--navy2); }
+        .eye svg {
+            width:17px; height:17px; stroke:currentColor; fill:none;
+            stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+        }
+
+        /* strength */
+        .strength-wrap { margin-top:5px; }
+        .strength-bar  { display:flex; gap:4px; }
+        .strength-seg  { flex:1; height:3px; border-radius:99px; background:#E8EAED; transition:background 0.3s; }
+        .strength-seg.weak   { background:#ef4444; }
+        .strength-seg.medium { background:#F5A623; }
+        .strength-seg.strong { background:#138808; }
+        .strength-label { font-size:0.68rem; font-weight:700; margin-top:3px; color:#94a3b8; }
+
+        /* errors */
+        .error-msg {
+            display:none; color:var(--red);
+            font-size:0.74rem; margin-top:0.28rem; font-weight:700;
+        }
+        .has-error input,
+        .has-error select { border-color:#FECACA !important; background:#FFF5F5 !important; }
+        .has-error .error-msg { display:block; }
+
+        /* button */
+        .btn-register {
+            width:100%; padding:0.88rem; border:none;
+            border-radius:12px; font-family:'Nunito', sans-serif;
+            font-size:1rem; font-weight:700; letter-spacing:0.06em;
+            cursor:pointer; position:relative; overflow:hidden;
+            color:var(--white);
+            background:linear-gradient(135deg, var(--saffron) 0%, #cc4e00 100%);
+            box-shadow:0 6px 20px rgba(255,107,0,0.30);
+            transition:transform 0.15s, box-shadow 0.15s;
+            margin-top:1rem;
+        }
+        .btn-register::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+            transform:translateX(-100%); transition:transform 0.55s;
+        }
+        .btn-register:hover::before { transform:translateX(100%); }
+        .btn-register:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(255,107,0,0.42); }
+        .btn-register:active { transform:translateY(0); }
+        .btn-register:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+        .btn-arrow { display:inline-block; margin-left:0.4rem; transition:transform 0.2s; }
+        .btn-register:hover .btn-arrow { transform:translateX(4px); }
+
+        .sep {
+            display:flex; align-items:center; gap:0.7rem;
+            margin:1rem 0; color:#D1D5DB; font-size:0.75rem;
+        }
+        .sep::before, .sep::after { content:''; flex:1; height:1px; background:#E8EAED; }
+
+        .login-line { text-align:center; font-size:0.82rem; color:#8A94A6; }
+        .login-line a {
+            color:var(--navy2); font-weight:700; text-decoration:none;
+            margin-left:0.2rem; transition:color 0.2s;
+        }
+        .login-line a:hover { color:var(--green); text-decoration:underline; }
+
+        /* toast */
+        #toast {
+            position:fixed; bottom:28px; left:50%;
+            transform:translateX(-50%) translateY(80px);
+            padding:11px 26px; border-radius:50px;
+            font-size:0.86rem; font-weight:700;
+            font-family:'Nunito', sans-serif;
+            box-shadow:0 12px 40px rgba(0,0,0,0.12);
+            opacity:0; transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            z-index:9999; white-space:nowrap;
+        }
+        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        #toast.ok  { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+        #toast.err { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
+
+        @media (max-width: 640px) {
+            body { padding:0.75rem 0; }
+            .card-wrapper { width:calc(100% - 1.25rem); border-radius:16px; }
+            .left-panel   { display:none; }
+            .right-panel  { padding:2rem 1.5rem; }
+            .row-2        { grid-template-columns:1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-    <h2>REGISTER</h2>
+<div class="tricolor-top"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
 
-    <form onsubmit="return validatePassword()">
+<div class="card-wrapper">
 
-        <div class="input-group">
-            <label>Username</label>
-            <input type="text" required>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="mandala-ring"></div>
+
+        <div class="logo-wrap">
+            <div class="logo-glow"></div>
+            <div class="logo-inner">
+                <img src="static/mom.jpeg" alt="Poshan Abhiyan"/>
+            </div>
         </div>
 
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="password" required>
-            <span class="eye" onclick="togglePassword('password', this)">👁‍🗨</span>
+        <h1 class="panel-title">
+            POSHAN ABHIYAN
+            <span>Anganwadi Management System</span>
+        </h1>
+        <div class="divider-gold"></div>
+
+        <ul class="steps">
+            <li><span class="step-num">1</span>Enter your username &amp; centre details</li>
+            <li><span class="step-num">2</span>Create and confirm a strong password</li>
+            <li><span class="step-num">3</span>Set 3 secret security questions</li>
+            <li><span class="step-num">4</span>Submit &amp; sign in to your portal</li>
+        </ul>
+
+        <div class="badge">Anganwadi Management Portal</div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+        <div class="greet">Get Started</div>
+        <h2 class="form-heading">Create Your<br/>Account</h2>
+        <p class="form-sub">Register to access the Poshan Abhiyan portal</p>
+
+        <form id="registerForm" novalidate onsubmit="handleSubmit(event)">
+
+            <!-- Username -->
+            <div class="form-group" id="fg-username">
+                <label for="username">Username</label>
+                <div class="input-wrap">
+                    <span class="i-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </span>
+                    <input type="text" id="username" placeholder="e.g. asha_worker1" autocomplete="username"/>
+                </div>
+                <div class="error-msg">Please enter a username.</div>
+            </div>
+
+            <!-- Password + Confirm -->
+            <div class="row-2">
+                <div class="form-group" id="fg-password">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </span>
+                        <input type="password" id="password" placeholder="Min. 6 characters"
+                               autocomplete="new-password" oninput="checkStrength(this.value)"/>
+                        <button type="button" class="eye" id="eye-pass" onclick="toggleVis('password','eye-pass')">
+                            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="strength-wrap">
+                        <div class="strength-bar">
+                            <div class="strength-seg" id="s1"></div>
+                            <div class="strength-seg" id="s2"></div>
+                            <div class="strength-seg" id="s3"></div>
+                            <div class="strength-seg" id="s4"></div>
+                        </div>
+                        <div class="strength-label" id="sLabel"></div>
+                    </div>
+                    <div class="error-msg">Password must be at least 6 characters.</div>
+                </div>
+
+                <div class="form-group" id="fg-confirm">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </span>
+                        <input type="password" id="confirmPassword" placeholder="Repeat password"
+                               autocomplete="new-password"/>
+                        <button type="button" class="eye" id="eye-conf" onclick="toggleVis('confirmPassword','eye-conf')">
+                            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="error-msg">Passwords do not match.</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register" id="submitBtn">
+                Next — Set Security Questions <span class="btn-arrow">→</span>
+            </button>
+
+        </form>
+
+        <div class="sep">or</div>
+
+        <div class="login-line">
+            Already have an account?
+            <a href="login.html">Sign In →</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══ SECURITY QUESTIONS MODAL ══ -->
+<div class="sq-overlay" id="sqOverlay" role="dialog" aria-modal="true" aria-labelledby="sqTitle">
+    <div class="sq-card">
+        <button class="sq-close" onclick="closeSQ()" aria-label="Close">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div class="sq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h2 class="sq-title" id="sqTitle">🔐 Security Questions</h2>
+        <p class="sq-sub">These answers will be used to verify your identity if you forget your password. Keep them memorable!</p>
+
+        <!-- Q1: Favourite colour -->
+        <div style="margin-bottom:0.9rem;">
+            <label class="sq-label" for="sq-color">🎨 What is your favourite colour?</label>
+            <div class="sq-input-wrap">
+                <span class="sq-icon-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
+                <input type="text" id="sq-color" placeholder="e.g. Blue, Red, Green…" autocomplete="off"/>
+            </div>
+            <div class="sq-err" id="sq-err0">Please enter your favourite colour.</div>
         </div>
 
-        <div class="input-group">
-            <label>Confirm Password</label>
-            <input type="password" id="confirmPassword" required>
-            <span class="eye" onclick="togglePassword('confirmPassword', this)">👁‍🗨</span>
+        <!-- Q2: Nickname -->
+        <div style="margin-bottom:0.9rem;">
+            <label class="sq-label" for="sq-nickname">😊 What is your nickname?</label>
+            <div class="sq-input-wrap">
+                <span class="sq-icon-i"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <input type="text" id="sq-nickname" placeholder="e.g. Pinky, Champ…" autocomplete="off"/>
+            </div>
+            <div class="sq-err" id="sq-err1">Please enter your nickname.</div>
         </div>
 
-        <button type="submit">Create Account</button>
+        <!-- Q3: Favourite teacher -->
+        <div style="margin-bottom:0.3rem;">
+            <label class="sq-label" for="sq-teacher">📚 Who is your favourite teacher?</label>
+            <div class="sq-input-wrap">
+                <span class="sq-icon-i"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+                <input type="text" id="sq-teacher" placeholder="e.g. Mrs. Sharma…" autocomplete="off"/>
+            </div>
+            <div class="sq-err" id="sq-err2">Please enter your favourite teacher's name.</div>
+        </div>
 
-    </form>
-
-    <div class="login-link">
-        <a href="login.html">Back to Login</a>
+        <button class="btn-sq-save" id="sqSaveBtn" onclick="saveSQ()">✓ Save &amp; Create Account</button>
     </div>
 </div>
 
+<div id="toast"></div>
+
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script>
-function togglePassword(fieldId, eyeIcon) {
-    var field = document.getElementById(fieldId);
+    /* ── EYE TOGGLE ── */
+    const EYE_OPEN  = `<svg viewBox="0 0 24 24" width="17" height="17" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const EYE_SLASH = `<svg viewBox="0 0 24 24" width="17" height="17" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
-    if (field.type === "password") {
-        field.type = "text";
-        eyeIcon.textContent = "👁";
-    } else {
-        field.type = "password";
-        eyeIcon.textContent = "👁";
-    }
-}
-
-function validatePassword() {
-    var pass = document.getElementById("password").value;
-    var confirmPass = document.getElementById("confirmPassword").value;
-
-    if (pass !== confirmPass) {
-        alert("Passwords do not match!");
-        return false;
+    function toggleVis(fieldId, btnId) {
+        const input  = document.getElementById(fieldId);
+        const btn    = document.getElementById(btnId);
+        const hidden = input.type === 'password';
+        input.type   = hidden ? 'text' : 'password';
+        btn.innerHTML = hidden ? EYE_SLASH : EYE_OPEN;
     }
 
-    alert("Account Created Successfully!");
-    window.location.href = "login.html";  // Link to login page
-    return false;
-}
+    /* ── STRENGTH ── */
+    function checkStrength(val) {
+        const segs  = ['s1','s2','s3','s4'].map(id => document.getElementById(id));
+        const label = document.getElementById('sLabel');
+        segs.forEach(s => s.className = 'strength-seg');
+        if (!val) { label.textContent = ''; return; }
+
+        let score = 0;
+        if (val.length >= 6)  score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const levels = [
+            null,
+            { cls:'weak',   text:'Weak',   color:'#DC2626' },
+            { cls:'medium', text:'Fair',   color:'#F5A623' },
+            { cls:'strong', text:'Good',   color:'#138808' },
+            { cls:'strong', text:'Strong', color:'#138808' },
+        ];
+        const cfg = levels[score] || levels[1];
+        for (let i = 0; i < score; i++) segs[i].classList.add(cfg.cls);
+        label.textContent  = cfg.text;
+        label.style.color  = cfg.color;
+    }
+
+    /* ── VALIDATE FIELD ── */
+    function setErr(groupId, hasError) {
+        document.getElementById(groupId).classList.toggle('has-error', hasError);
+    }
+
+    /* ── TOAST ── */
+    let _tt;
+    function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'show ' + type;
+        clearTimeout(_tt);
+        _tt = setTimeout(() => el.className = '', 3500);
+    }
+
+    /* ── STEP 1 SUBMIT → open security questions modal ── */
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const pass     = document.getElementById('password').value;
+        const confirm  = document.getElementById('confirmPassword').value;
+
+        let valid = true;
+        setErr('fg-username', !username);       if (!username)       valid = false;
+        setErr('fg-password', pass.length < 6); if (pass.length < 6) valid = false;
+        const mismatch = !confirm || pass !== confirm;
+        setErr('fg-confirm', mismatch);         if (mismatch)        valid = false;
+
+        if (!valid) { showToast('Please fix the highlighted fields.', 'err'); return; }
+
+        // Open the security questions modal
+        ['sq-color','sq-nickname','sq-teacher'].forEach(id => document.getElementById(id).value = '');
+        ['sq-err0','sq-err1','sq-err2'].forEach(id => document.getElementById(id).classList.remove('show'));
+        document.getElementById('sqSaveBtn').disabled = false;
+        document.getElementById('sqSaveBtn').innerHTML = '✓ Save &amp; Create Account';
+        document.getElementById('sqOverlay').classList.add('open');
+        setTimeout(() => document.getElementById('sq-color').focus(), 120);
+    }
+
+    function closeSQ() {
+        document.getElementById('sqOverlay').classList.remove('open');
+    }
+
+    /* ── STEP 2: save answers & finish ── */
+    async function saveSQ() {
+        const color    = document.getElementById('sq-color').value.trim();
+        const nickname = document.getElementById('sq-nickname').value.trim();
+        const teacher  = document.getElementById('sq-teacher').value.trim();
+        const e0 = document.getElementById('sq-err0');
+        const e1 = document.getElementById('sq-err1');
+        const e2 = document.getElementById('sq-err2');
+
+        let ok = true;
+        e0.classList.toggle('show', !color);    if (!color)    { ok=false; }
+        e1.classList.toggle('show', !nickname); if (!nickname) { ok=false; }
+        e2.classList.toggle('show', !teacher);  if (!teacher)  { ok=false; }
+        if (!ok) { showToast('Please answer all 3 security questions.', 'err'); return; }
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        const btn = document.getElementById('sqSaveBtn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Saving…';
+
+        // ── 1. Save to backend database ──────────────────────────────
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username:    username.toLowerCase(),
+                    password:    password,
+                    sq_color:    color.toLowerCase(),
+                    sq_nickname: nickname.toLowerCase(),
+                    sq_teacher:  teacher.toLowerCase()
+                })
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                const msg = err.detail || 'Registration failed.';
+                // Username already taken?
+                if (res.status === 409) {
+                    showToast('⚠️ Username already exists. Please choose another.', 'err');
+                } else {
+                    showToast('❌ ' + msg, 'err');
+                }
+                btn.disabled = false;
+                btn.innerHTML = '✓ Save & Create Account';
+                return;
+            }
+        } catch (networkErr) {
+            // Server unreachable — fall through to localStorage only
+            console.warn('Backend unreachable, saving to localStorage only.', networkErr);
+        }
+
+        // ── 2. Also save to localStorage (fallback / offline) ────────
+        const accounts = JSON.parse(localStorage.getItem('poshanAccounts') || '{}');
+        accounts[username.toLowerCase()] = {
+            color:    color.toLowerCase(),
+            nickname: nickname.toLowerCase(),
+            teacher:  teacher.toLowerCase()
+        };
+        localStorage.setItem('poshanAccounts', JSON.stringify(accounts));
+
+        btn.innerHTML = '✓ Saved!';
+        btn.style.background = 'linear-gradient(135deg,#138808,#0a5e05)';
+
+        showToast('✅ Account created successfully! Redirecting…', 'ok');
+        setTimeout(() => window.location.href = 'login.html', 1800);
+    }
+
+    /* Close on Escape */
+    document.addEventListener('keydown', e => { if (e.key==='Escape') closeSQ(); });
+    /* Close on backdrop click */
+    document.getElementById('sqOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeSQ();
+    });
 </script>
 
 </body>

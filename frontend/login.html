@@ -4,7 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>POSHAN ABHIYAN - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="manifest" href="manifest.json">
+    <link href="static/fonts.css" rel="stylesheet"/>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,8 +43,7 @@
             overflow-x: hidden;
             overflow-y: auto;
             padding: 1rem 0;
-            background: url("static/PA.jpeg") no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(135deg, #f7efe2 0%, #eef7ec 55%, #fef7ea 100%);
         }
 
         body::before {
@@ -169,13 +169,13 @@
 
         .panel-title {
             font-family:'Playfair Display', serif;
-            font-size:1.45rem; font-weight:900;
+            font-size:1.65rem; font-weight:900;
             color:var(--navy); text-align:center;
             line-height:1.2; position:relative; z-index:2;
         }
 
         .panel-title span {
-            display:block; font-size:0.67rem;
+            display:block; font-size:0.78rem;
             font-family:'Nunito', sans-serif; font-weight:600;
             color:rgba(0,0,0,0.38); letter-spacing:0.16em;
             text-transform:uppercase; margin-top:0.3rem;
@@ -191,7 +191,7 @@
         .features { list-style:none; position:relative; z-index:2; width:100%; }
 
         .features li {
-            font-size:0.78rem; color:rgba(0,0,0,0.55);
+            font-size:0.9rem; color:rgba(0,0,0,0.55);
             padding:0.4rem 0; display:flex; align-items:center;
             gap:0.55rem; border-bottom:1px solid rgba(0,0,0,0.05);
         }
@@ -203,7 +203,7 @@
 
         .badge {
             margin-top:1.5rem; position:relative; z-index:2;
-            font-size:0.63rem; color:rgba(0,0,0,0.30); text-align:center;
+            font-size:0.74rem; color:rgba(0,0,0,0.30); text-align:center;
             letter-spacing:0.1em; text-transform:uppercase;
             border:1px solid rgba(0,0,0,0.08); border-radius:20px;
             padding:0.35rem 0.9rem; background:rgba(255,255,255,0.6);
@@ -224,24 +224,24 @@
         }
 
         .greet {
-            font-size:0.75rem; font-weight:700;
+            font-size:0.86rem; font-weight:700;
             letter-spacing:0.16em; text-transform:uppercase;
             color:var(--saffron); margin-bottom:0.3rem;
         }
 
         .form-heading {
             font-family:'Playfair Display', serif;
-            font-size:2rem; font-weight:900;
+            font-size:2.2rem; font-weight:900;
             color:var(--navy); line-height:1.15; margin-bottom:0.2rem;
         }
 
-        .form-sub { font-size:0.82rem; color:#8A94A6; margin-bottom:2rem; }
+        .form-sub { font-size:0.95rem; color:#8A94A6; margin-bottom:2rem; }
 
         /* INPUTS */
         .form-group { margin-bottom:1.1rem; }
 
         .form-group label {
-            display:block; font-size:0.74rem; font-weight:700;
+            display:block; font-size:0.84rem; font-weight:700;
             letter-spacing:0.07em; text-transform:uppercase;
             color:var(--navy2); margin-bottom:0.4rem;
         }
@@ -268,7 +268,7 @@
             width:100%;
             padding:0.78rem 0.9rem 0.78rem 2.6rem;
             border:2px solid #E8EAED; border-radius:12px;
-            font-size:0.9rem; font-family:'Nunito', sans-serif;
+            font-size:1rem; font-family:'Nunito', sans-serif;
             color:var(--navy); background:#F8F9FC;
             outline:none;
             transition:border-color 0.22s, background 0.22s, box-shadow 0.22s;
@@ -337,9 +337,178 @@
         .forgot {
             color:var(--saffron); text-decoration:none;
             font-weight:700; font-size:0.8rem; transition:opacity 0.2s;
+            cursor:pointer; background:none; border:none; padding:0;
+            font-family:'Nunito', sans-serif;
         }
 
         .forgot:hover { opacity:0.7; text-decoration:underline; }
+
+        /* ── FORGOT PASSWORD MODAL ── */
+        .fp-overlay {
+            display:none;
+            position:fixed; inset:0;
+            background:rgba(20,30,48,0.55);
+            backdrop-filter:blur(6px);
+            z-index:1000;
+            align-items:center;
+            justify-content:center;
+            padding:1rem;
+        }
+        .fp-overlay.open { display:flex; animation:fadeIn 0.25s ease both; }
+
+        @keyframes fadeIn {
+            from { opacity:0; }
+            to   { opacity:1; }
+        }
+
+        .fp-card {
+            background:#fff;
+            border-radius:22px;
+            width:100%; max-width:460px;
+            padding:2.4rem 2.2rem 2rem;
+            box-shadow:0 30px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.8);
+            position:relative;
+            animation:slideUp 0.32s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(30px) scale(0.97); }
+            to   { opacity:1; transform:translateY(0)    scale(1); }
+        }
+
+        .fp-close {
+            position:absolute; top:1rem; right:1rem;
+            background:none; border:none;
+            cursor:pointer; color:#BCC0C9;
+            padding:4px; border-radius:8px;
+            transition:color 0.2s, background 0.2s;
+            display:flex; align-items:center;
+        }
+        .fp-close:hover { color:var(--navy); background:#F3F4F6; }
+        .fp-close svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; }
+
+        .fp-icon {
+            width:56px; height:56px;
+            background:linear-gradient(135deg, rgba(255,107,0,0.12), rgba(245,166,35,0.12));
+            border-radius:16px;
+            display:flex; align-items:center; justify-content:center;
+            margin-bottom:1.1rem;
+        }
+        .fp-icon svg { width:28px; height:28px; stroke:var(--saffron); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+        .fp-title {
+            font-family:'Playfair Display', serif;
+            font-size:1.5rem; font-weight:900;
+            color:var(--navy); margin-bottom:0.25rem;
+        }
+        .fp-sub { font-size:0.88rem; color:#8A94A6; margin-bottom:1.6rem; line-height:1.5; }
+
+        /* step indicator */
+        .fp-steps {
+            display:flex; gap:6px; margin-bottom:1.6rem;
+        }
+        .fp-step-dot {
+            flex:1; height:4px; border-radius:99px;
+            background:#E8EAED;
+            transition:background 0.35s;
+        }
+        .fp-step-dot.active   { background:var(--saffron); }
+        .fp-step-dot.done     { background:var(--green); }
+
+        /* step panels */
+        .fp-step { display:none; }
+        .fp-step.active { display:block; animation:fadeIn 0.2s ease both; }
+
+        .fp-label {
+            font-size:0.82rem; font-weight:700;
+            letter-spacing:0.07em; text-transform:uppercase;
+            color:var(--navy2); margin-bottom:0.4rem; display:block;
+        }
+
+        .fp-input-wrap { position:relative; margin-bottom:0.35rem; }
+        .fp-input-wrap .fp-i-icon {
+            position:absolute; left:13px; top:50%;
+            transform:translateY(-50%);
+            pointer-events:none; color:#BCC0C9;
+            display:flex; align-items:center; transition:color 0.2s;
+        }
+        .fp-input-wrap .fp-i-icon svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+        .fp-input-wrap input {
+            width:100%; padding:0.76rem 0.9rem 0.76rem 2.55rem;
+            border:2px solid #E8EAED; border-radius:12px;
+            font-size:0.97rem; font-family:'Nunito', sans-serif;
+            color:var(--navy); background:#F8F9FC;
+            outline:none;
+            transition:border-color 0.22s, background 0.22s, box-shadow 0.22s;
+        }
+        .fp-input-wrap input::placeholder { color:#C4C8D0; }
+        .fp-input-wrap input:focus {
+            border-color:var(--saffron); background:#fff;
+            box-shadow:0 0 0 4px rgba(255,107,0,0.10);
+        }
+        .fp-input-wrap:focus-within .fp-i-icon { color:var(--saffron); }
+
+        .fp-err {
+            display:none; color:var(--red);
+            font-size:0.76rem; font-weight:700;
+            margin-bottom:0.5rem;
+        }
+        .fp-err.show { display:block; }
+
+        .fp-btn {
+            width:100%; padding:0.85rem;
+            border:none; border-radius:12px;
+            font-family:'Nunito', sans-serif;
+            font-size:0.97rem; font-weight:700;
+            letter-spacing:0.05em;
+            cursor:pointer; color:#fff; margin-top:0.6rem;
+            background:linear-gradient(135deg, var(--saffron) 0%, #cc4e00 100%);
+            box-shadow:0 6px 20px rgba(255,107,0,0.28);
+            transition:transform 0.15s, box-shadow 0.15s;
+            position:relative; overflow:hidden;
+        }
+        .fp-btn::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+            transform:translateX(-100%); transition:transform 0.55s;
+        }
+        .fp-btn:hover::before { transform:translateX(100%); }
+        .fp-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(255,107,0,0.38); }
+        .fp-btn:active { transform:translateY(0); }
+
+        /* success screen */
+        .fp-success {
+            display:none; text-align:center; padding:1rem 0 0.5rem;
+        }
+        .fp-success.show { display:block; animation:fadeIn 0.3s ease both; }
+        .fp-success-icon {
+            width:72px; height:72px;
+            background:linear-gradient(135deg, rgba(19,136,8,0.12), rgba(19,136,8,0.06));
+            border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto 1.1rem;
+        }
+        .fp-success-icon svg { width:36px; height:36px; stroke:var(--green); fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+        .fp-success h3 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--navy); margin-bottom:0.5rem; }
+        .fp-success p  { font-size:0.9rem; color:#8A94A6; line-height:1.6; margin-bottom:1.4rem; }
+        .fp-new-pass-box {
+            background:linear-gradient(135deg,#f0fff4,#e6fce6);
+            border:1px solid rgba(19,136,8,0.18);
+            border-radius:12px; padding:1rem 1.2rem;
+            font-size:0.85rem; color:var(--deep-green);
+            margin-bottom:1.4rem; text-align:left;
+        }
+        .fp-new-pass-box strong { display:block; margin-bottom:0.2rem; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--green); }
+        .fp-back-btn {
+            width:100%; padding:0.85rem;
+            border:2px solid var(--green); border-radius:12px;
+            font-family:'Nunito', sans-serif;
+            font-size:0.97rem; font-weight:700;
+            cursor:pointer; color:var(--green);
+            background:transparent;
+            transition:background 0.2s, color 0.2s;
+        }
+        .fp-back-btn:hover { background:var(--green); color:#fff; }
 
         /* LOGIN BUTTON */
         .btn-login {
@@ -436,7 +605,7 @@
             Incorrect username or password. Please try again.
         </div>
 
-        <form id="loginForm" novalidate>
+        <form id="loginForm" novalidate autocomplete="off">
 
             <!-- USERNAME -->
             <div class="form-group">
@@ -453,7 +622,8 @@
                         type="text"
                         id="username"
                         placeholder="Enter your username"
-                        autocomplete="username"
+                        autocomplete="off"
+                        value=""
                     />
                 </div>
                 <div class="error-msg" id="errUser">Please enter your username.</div>
@@ -474,7 +644,8 @@
                         type="password"
                         id="password"
                         placeholder="Enter your password"
-                        autocomplete="current-password"
+                        autocomplete="new-password"
+                        value=""
                     />
                     <button type="button" class="eye" id="eyeBtn" onclick="togglePassword()">
                         <!-- eye icon SVG -->
@@ -489,7 +660,7 @@
 
             <!-- FORGOT -->
             <div class="form-row">
-                <a href="#" class="forgot">Forgot Password?</a>
+                <button type="button" class="forgot" id="forgotBtn" onclick="openForgotModal()">Forgot Password?</button>
             </div>
 
             <button type="submit" class="btn-login">
@@ -507,6 +678,325 @@
 
     </div>
 </div>
+
+<!-- ══════════ FORGOT PASSWORD MODAL ══════════ -->
+<div class="fp-overlay" id="fpOverlay" role="dialog" aria-modal="true" aria-labelledby="fpModalTitle">
+    <div class="fp-card">
+
+        <!-- close button -->
+        <button class="fp-close" id="fpCloseBtn" onclick="closeForgotModal()" aria-label="Close">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <!-- header (hidden during success) -->
+        <div id="fpHeader">
+            <div class="fp-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <h2 class="fp-title" id="fpModalTitle">Forgot Password?</h2>
+            <p class="fp-sub">Enter your username, then answer your 3 security questions to reset your password.</p>
+
+            <!-- step dots: username / colour / nickname / teacher+pass -->
+            <div class="fp-steps">
+                <div class="fp-step-dot active" id="dot0"></div>
+                <div class="fp-step-dot" id="dot1"></div>
+                <div class="fp-step-dot" id="dot2"></div>
+                <div class="fp-step-dot" id="dot3"></div>
+            </div>
+        </div>
+
+        <!-- STEP 0 : username lookup -->
+        <div class="fp-step active" id="fpStep0">
+            <label class="fp-label" for="fp-username">👤 Enter Your Username</label>
+            <div class="fp-input-wrap">
+                <span class="fp-i-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <input type="text" id="fp-username" placeholder="Your registered username" autocomplete="username"/>
+            </div>
+            <div class="fp-err" id="fp-err0">Please enter your username.</div>
+            <div class="fp-err" id="fp-err-nouser">No account found with that username. Please register first.</div>
+            <button class="fp-btn" onclick="fpNext(0)">Next →</button>
+        </div>
+
+        <!-- STEP 1 : favourite colour -->
+        <div class="fp-step" id="fpStep1">
+            <label class="fp-label" for="fp-color">🎨 What is your favourite colour?</label>
+            <div class="fp-input-wrap">
+                <span class="fp-i-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </span>
+                <input type="text" id="fp-color" placeholder="e.g. Blue, Red, Green…" autocomplete="off"/>
+            </div>
+            <div class="fp-err" id="fp-err1">Please enter your favourite colour.</div>
+            <div class="fp-err" id="fp-err1w">❌ Wrong answer. Try again.</div>
+            <button class="fp-btn" onclick="fpNext(1)">Next →</button>
+        </div>
+
+        <!-- STEP 2 : nickname -->
+        <div class="fp-step" id="fpStep2">
+            <label class="fp-label" for="fp-nickname">😊 What is your nickname?</label>
+            <div class="fp-input-wrap">
+                <span class="fp-i-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <input type="text" id="fp-nickname" placeholder="e.g. Pinky, Champ…" autocomplete="off"/>
+            </div>
+            <div class="fp-err" id="fp-err2">Please enter your nickname.</div>
+            <div class="fp-err" id="fp-err2w">❌ Wrong answer. Try again.</div>
+            <button class="fp-btn" onclick="fpNext(2)">Next →</button>
+        </div>
+
+        <!-- STEP 3 : favourite teacher + new password -->
+        <div class="fp-step" id="fpStep3">
+            <label class="fp-label" for="fp-teacher">📚 Who is your favourite teacher?</label>
+            <div class="fp-input-wrap" style="margin-bottom:0.3rem;">
+                <span class="fp-i-icon">
+                    <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </span>
+                <input type="text" id="fp-teacher" placeholder="e.g. Mrs. Sharma…" autocomplete="off"/>
+            </div>
+            <div class="fp-err" id="fp-err3">Please enter your favourite teacher's name.</div>
+            <div class="fp-err" id="fp-err3w" style="margin-bottom:0.5rem;">❌ Wrong answer. Try again.</div>
+
+            <label class="fp-label" for="fp-newpass" style="margin-top:0.4rem;">🔒 Set New Password</label>
+            <div class="fp-input-wrap">
+                <span class="fp-i-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <input type="password" id="fp-newpass" placeholder="New password (min. 6 chars)" autocomplete="new-password"/>
+            </div>
+            <div class="fp-err" id="fp-err4">Password must be at least 6 characters.</div>
+
+            <button class="fp-btn" onclick="fpSubmit()">Reset Password →</button>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div class="fp-success" id="fpSuccess">
+            <div class="fp-success-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3>Password Reset!</h3>
+            <p>Your identity has been verified successfully. Your password has been updated.</p>
+            <div class="fp-new-pass-box">
+                <strong>New Password</strong>
+                <span id="fpDisplayPass">••••••••</span>
+            </div>
+            <button class="fp-back-btn" onclick="closeForgotModal()">← Back to Login</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    /* ── FORGOT PASSWORD MODAL LOGIC ── */
+    const FP_STEPS = 4; // username / colour / nickname / teacher+newpass
+
+    function openForgotModal() {
+        fpReset();
+        document.getElementById('fpOverlay').classList.add('open');
+        setTimeout(() => document.getElementById('fp-username').focus(), 120);
+    }
+
+    function closeForgotModal() {
+        document.getElementById('fpOverlay').classList.remove('open');
+    }
+
+    function fpReset() {
+        document.getElementById('fpSuccess').classList.remove('show');
+        document.getElementById('fpHeader').style.display = '';
+
+        for (let i = 0; i < FP_STEPS; i++) {
+            const step = document.getElementById('fpStep' + i);
+            if (step) step.classList.remove('active');
+            updateDot(i, '');
+        }
+        // Hide all error divs
+        ['fp-err0','fp-err-nouser',
+         'fp-err1','fp-err1w',
+         'fp-err2','fp-err2w',
+         'fp-err3','fp-err3w','fp-err4'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('show');
+        });
+
+        document.getElementById('fpStep0').classList.add('active');
+        updateDot(0, 'active');
+
+        ['fp-username','fp-color','fp-nickname','fp-teacher','fp-newpass'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+    }
+
+    function updateDot(index, state) {
+        const dot = document.getElementById('dot' + index);
+        if (!dot) return;
+        dot.className = 'fp-step-dot';
+        if (state) dot.classList.add(state);
+    }
+
+    /* ── Verify one security answer against backend (falls back to localStorage) ── */
+    async function verifyOnBackend(username, field, answer) {
+        try {
+            const res = await fetch('/api/auth/verify-security', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, field, answer })
+            });
+            if (res.status === 401) return { ok: false, source: 'backend' };
+            if (res.status === 404) return { ok: null,  source: 'backend' }; // user not in DB
+            if (res.ok)            return { ok: true,  source: 'backend' };
+        } catch (_) { /* network error — fall through */ }
+        return { ok: null, source: 'offline' }; // offline
+    }
+
+    /* Returns saved security answers for a username from localStorage, or null */
+    function getAccountLocal(username) {
+        const accounts = JSON.parse(localStorage.getItem('poshanAccounts') || '{}');
+        return accounts[username.trim().toLowerCase()] || null;
+    }
+
+    /* Check username exists: backend first, localStorage fallback */
+    async function checkUserExists(username) {
+        try {
+            const res = await fetch(`/api/auth/user-exists/${encodeURIComponent(username.toLowerCase())}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.exists) return 'backend';
+                // Not in backend — check localStorage
+                return getAccountLocal(username) ? 'local' : null;
+            }
+        } catch (_) { /* offline */ }
+        return getAccountLocal(username) ? 'local' : null;
+    }
+
+    async function fpNext(stepIndex) {
+        /* stepIndex 0 = username, 1 = colour, 2 = nickname */
+        const hide = ids => ids.forEach(id => { const e = document.getElementById(id); if (e) e.classList.remove('show'); });
+        const show = id  => { const e = document.getElementById(id); if (e) e.classList.add('show'); };
+        const val  = id  => document.getElementById(id).value.trim();
+        const focus= id  => document.getElementById(id).focus();
+
+        if (stepIndex === 0) {
+            hide(['fp-err0','fp-err-nouser']);
+            const uname = val('fp-username');
+            if (!uname)  { show('fp-err0'); focus('fp-username'); return; }
+
+            // Disable button while checking
+            const btn = document.querySelector('#fpStep0 .fp-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+
+            const source = await checkUserExists(uname);
+
+            if (btn) { btn.disabled = false; btn.textContent = 'Next →'; }
+
+            if (!source) { show('fp-err-nouser'); focus('fp-username'); return; }
+            window._fpUsername = uname.toLowerCase();
+            window._fpSource   = source;  // 'backend' or 'local'
+            if (source === 'local') window._fpAccount = getAccountLocal(uname);
+
+        } else if (stepIndex === 1) {
+            hide(['fp-err1','fp-err1w']);
+            const ans = val('fp-color');
+            if (!ans) { show('fp-err1'); focus('fp-color'); return; }
+
+            if (window._fpSource === 'backend') {
+                const btn = document.querySelector('#fpStep1 .fp-btn');
+                if (btn) { btn.disabled = true; btn.textContent = 'Verifying…'; }
+                const result = await verifyOnBackend(window._fpUsername, 'sq_color', ans.toLowerCase());
+                if (btn) { btn.disabled = false; btn.textContent = 'Next →'; }
+                if (result.ok === false) { show('fp-err1w'); focus('fp-color'); return; }
+            } else {
+                if (ans.toLowerCase() !== window._fpAccount.color) { show('fp-err1w'); focus('fp-color'); return; }
+            }
+
+        } else if (stepIndex === 2) {
+            hide(['fp-err2','fp-err2w']);
+            const ans = val('fp-nickname');
+            if (!ans) { show('fp-err2'); focus('fp-nickname'); return; }
+
+            if (window._fpSource === 'backend') {
+                const btn = document.querySelector('#fpStep2 .fp-btn');
+                if (btn) { btn.disabled = true; btn.textContent = 'Verifying…'; }
+                const result = await verifyOnBackend(window._fpUsername, 'sq_nickname', ans.toLowerCase());
+                if (btn) { btn.disabled = false; btn.textContent = 'Next →'; }
+                if (result.ok === false) { show('fp-err2w'); focus('fp-nickname'); return; }
+            } else {
+                if (ans.toLowerCase() !== window._fpAccount.nickname) { show('fp-err2w'); focus('fp-nickname'); return; }
+            }
+        }
+
+        /* Advance step */
+        document.getElementById('fpStep' + stepIndex).classList.remove('active');
+        updateDot(stepIndex, 'done');
+        const next = stepIndex + 1;
+        document.getElementById('fpStep' + next).classList.add('active');
+        updateDot(next, 'active');
+
+        const focusNext = { 1:'fp-color', 2:'fp-nickname', 3:'fp-teacher' };
+        if (focusNext[next]) setTimeout(() => focus(focusNext[next]), 100);
+    }
+
+    async function fpSubmit() {
+        const hide = ids => ids.forEach(id => { const e = document.getElementById(id); if (e) e.classList.remove('show'); });
+        const show = id  => { const e = document.getElementById(id); if (e) e.classList.add('show'); };
+        const val  = id  => document.getElementById(id).value.trim();
+        const focus= id  => document.getElementById(id).focus();
+
+        hide(['fp-err3','fp-err3w','fp-err4']);
+        const teacher = val('fp-teacher');
+        const newPass = document.getElementById('fp-newpass').value;
+        let ok = true;
+
+        if (!teacher) { show('fp-err3'); focus('fp-teacher'); ok = false; }
+        else {
+            if (window._fpSource === 'backend') {
+                const submitBtn = document.querySelector('#fpStep3 .fp-btn');
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Verifying…'; }
+                const result = await verifyOnBackend(window._fpUsername, 'sq_teacher', teacher.toLowerCase());
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Reset Password →'; }
+                if (result.ok === false) { show('fp-err3w'); focus('fp-teacher'); ok = false; }
+            } else {
+                if (teacher.toLowerCase() !== window._fpAccount.teacher) { show('fp-err3w'); focus('fp-teacher'); ok = false; }
+            }
+        }
+
+        if (newPass.length < 6) {
+            show('fp-err4');
+            if (ok) focus('fp-newpass');
+            ok = false;
+        }
+        if (!ok) return;
+
+        // ── Save new password to backend ──────────────────────────────
+        if (window._fpSource === 'backend') {
+            try {
+                await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: window._fpUsername, new_password: newPass })
+                });
+            } catch (_) { /* offline — password update skipped on server */ }
+        }
+
+        updateDot(3, 'done');
+        document.getElementById('fpStep3').classList.remove('active');
+        document.getElementById('fpHeader').style.display = 'none';
+        document.getElementById('fpDisplayPass').textContent = newPass;
+        document.getElementById('fpSuccess').classList.add('show');
+    }
+
+    /* Close on overlay backdrop click */
+    document.getElementById('fpOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeForgotModal();
+    });
+
+    /* Close on Escape */
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeForgotModal();
+    });
+</script>
 
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script type="module" src="js/pages/login.page.js"></script>

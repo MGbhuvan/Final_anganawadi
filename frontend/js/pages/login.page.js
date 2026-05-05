@@ -1,4 +1,22 @@
 import { API_BASE_URL } from "../config.js";
+import { saveSession, clearSession } from "../shared/apiClient.js";
+
+// Clear any stale session on the login page
+clearSession();
+
+// Force-clear input fields to prevent browser autofill showing old values.
+// Some browsers autofill AFTER JS runs, so we clear both immediately and on a delay.
+function clearLoginFields() {
+  const u = document.getElementById("username");
+  const p = document.getElementById("password");
+  if (u) u.value = "";
+  if (p) p.value = "";
+}
+clearLoginFields();
+// Browsers like Chrome sometimes autofill after DOMContentLoaded,
+// so clear again after a brief delay to catch late autofill.
+setTimeout(clearLoginFields, 50);
+setTimeout(clearLoginFields, 300);
 
 document.getElementById("loginForm").addEventListener("submit", function onSubmit(e) {
   e.preventDefault();
@@ -24,18 +42,54 @@ document.getElementById("loginForm").addEventListener("submit", function onSubmi
   }
   if (!valid) return;
 
-  verifyBackendAndContinue();
+  verifyCredentials(username, password);
 });
 
-async function verifyBackendAndContinue() {
+async function verifyCredentials(username, password) {
   const loginErr = document.getElementById("loginError");
+  const loginBtn = document.querySelector(".btn-login");
+
+  // Disable button while verifying
+  if (loginBtn) {
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = 'Verifying… <span class="btn-arrow">→</span>';
+  }
+
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
-    if (!response.ok) throw new Error("BACKEND_UNHEALTHY");
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      // Show the specific error from backend
+      loginErr.textContent =
+        data.detail || "Incorrect username or password. Please try again.";
+      loginErr.classList.add("show-error");
+      return;
+    }
+
+    // Save JWT session
+    saveSession({
+      token: data.token,
+      user_id: data.user_id,
+      username: data.username,
+    });
+
+    // Redirect to home
     window.location.href = "home.html";
   } catch (_err) {
-    loginErr.textContent = "Backend is not reachable. Start backend with: python run.py";
+    loginErr.textContent =
+      "Backend is not reachable. Start backend with: python run.py";
     loginErr.classList.add("show-error");
+  } finally {
+    if (loginBtn) {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = 'Login <span class="btn-arrow">→</span>';
+    }
   }
 }
 
@@ -54,6 +108,7 @@ window.togglePassword = togglePassword;
 
 (function createParticles() {
   const container = document.getElementById("particles");
+  if (!container) return;
   const colors = ["#FF6B00", "#138808", "#F5A623", "#FFD700", "#FF4081"];
   const sizes = [3, 4, 5, 6];
   for (let i = 0; i < 25; i += 1) {

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Poshan Abhiyan</title>
+<link rel="manifest" href="manifest.json">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
 
@@ -15,26 +16,49 @@
     position:relative;
   }
 
-  /* BG image layer — fixed behind everything */
+  /* combo.jpeg blurred background — 25% blur */
   .hp::before{
     content:'';
     position:fixed;inset:0;
-    background:url('static/PA.jpeg') center/cover no-repeat;
-    filter:brightness(1.05) saturate(0.65);
+    background-image: url('static/combo.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(6px);
+    opacity:0.75;
+    transform: scale(1.05);
     z-index:0;
   }
-  /* Cream wash — makes bg subtle and blends with light cards */
+
+  /* Soft overlay on top of blurred image */
   .hp::after{
     content:'';
     position:fixed;inset:0;
-    background:rgba(240,237,232,0.80);
+    background: linear-gradient(
+      135deg,
+      rgba(255,241,221,0.68) 0%,
+      rgba(236,247,234,0.68) 46%,
+      rgba(231,241,255,0.68) 100%
+    );
     z-index:1;
   }
 
-  /* DARK MODE — same bg image but darkened wash */
+  /* DARK MODE */
   .hp.dark{ color:#EDE9E2; }
-  .hp.dark::before{ filter:brightness(0.30) saturate(0.45); }
-  .hp.dark::after{ background:rgba(12,14,20,0.82); }
+  .hp.dark::before{
+    filter: blur(6px) brightness(0.4);
+    opacity:0.75;
+    transform: scale(1.05);
+  }
+  .hp.dark::after{
+    background: linear-gradient(
+      135deg,
+      rgba(13,27,18,0.78) 0%,
+      rgba(14,30,46,0.78) 30%,
+      rgba(19,13,30,0.78) 60%,
+      rgba(26,16,8,0.78) 100%
+    );
+  }
 
   /* Everything above the pseudo layers */
   .tri,.header-wrap,.pg{ position:relative; z-index:2; }
@@ -45,8 +69,9 @@
   /* ── PROFILE CIRCLE ── */
   .header-wrap{max-width:980px;margin:0 auto;padding:0 16px 10px;}
   .profile-wrap{display:flex;justify-content:center;padding:20px 0 12px;}
+  .profile-head{display:flex;flex-direction:column;align-items:center;gap:10px;}
   .profile-circle{
-    width:120px;height:120px;border-radius:50%;
+    width:150px;height:150px;border-radius:50%;
     overflow:hidden;
     border:4px solid rgba(255,255,255,0.9);
     box-shadow:0 4px 24px rgba(0,0,0,0.16);
@@ -54,102 +79,92 @@
   }
   .hp.dark .profile-circle{ border-color:rgba(255,255,255,0.15); }
   .profile-circle img{width:100%;height:100%;object-fit:cover;display:block;}
+  .profile-title{font-size:20px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0E1117;text-align:center;}
+  .hp.dark .profile-title{color:#EDE9E2;}
 
   /* ── NAV ── */
   .nav{
     min-height:54px;
-    background:rgba(245,244,241,0.75);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.5);
+    background:transparent;
+    border:0;
     border-radius:12px;
     display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
   }
-  .hp.dark .nav{background:rgba(17,19,24,0.75);border-color:rgba(255,255,255,0.06);}
+  .hp.dark .nav{background:transparent;border-color:transparent;}
   .nav-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
   .nav-flag{display:flex;flex-direction:column;height:16px;width:9px;border-radius:2px;overflow:hidden;}
   .nf1{flex:1;background:#FF9933;}.nf2{flex:1;background:#fff;}.nf3{flex:1;background:#138808;}
-  .nav-brand{font-size:13px;font-weight:600;color:#0E1117;letter-spacing:0.06em;white-space:nowrap;}
-  .hp.dark .nav-brand{color:#EDE9E2;}
   .nav-sep{width:1px;height:18px;background:rgba(0,0,0,0.12);}
   .hp.dark .nav-sep{background:rgba(255,255,255,0.1);}
-  .nav-sub{font-size:10px;color:#9A9590;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nav-sub{font-size:14px;color:#9A9590;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .nav-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
-  .nav-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:999px;background:rgba(27,120,64,0.12);color:#1B7840;border:1px solid rgba(27,120,64,0.25);}
-  .nav-btn{font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.55);cursor:pointer;color:#9A9590;}
-  .hp.dark .nav-btn{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#6B6760;}
+  .nav-badge{font-size:14px;font-weight:600;padding:5px 14px;border-radius:999px;background:rgba(27,120,64,0.12);color:#1B7840;border:1px solid rgba(27,120,64,0.25);}
 
   /* ── CONTENT ── */
   .pg{max-width:900px;margin:0 auto;padding:24px 16px 48px;}
 
   /* HERO */
   .hero{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;}
-  .hero-lbl{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#9A9590;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .hero-lbl{font-size:14px;letter-spacing:0.2em;text-transform:uppercase;color:#9A9590;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
   .hero-lbl::before{content:'';display:inline-block;width:16px;height:2px;background:#E05C1A;border-radius:2px;}
-  .hero-title{font-size:26px;font-weight:500;color:#0E1117;line-height:1.1;}
+  .hero-title{font-size:34px;font-weight:500;color:#0E1117;line-height:1.15;}
   .hp.dark .hero-title{color:#EDE9E2;}
   .hero-title em{font-style:italic;color:#1B7840;}
 
   /* Clock */
   .clock{
-    background:rgba(255,255,255,0.55);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,0.6);
+    background:rgba(255,255,255,0.88);
+    border:1px solid rgba(14,17,23,0.08);
     border-radius:14px;padding:10px 16px;text-align:right;
     box-shadow:0 2px 12px rgba(0,0,0,0.06);
   }
-  .hp.dark .clock{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
-  .clock-t{font-size:20px;font-weight:500;color:#0E1117;letter-spacing:-0.02em;}
+  .hp.dark .clock{background:rgba(28,31,39,0.18);border-color:rgba(255,255,255,0.07);}
+  .clock-t{font-size:26px;font-weight:500;color:#0E1117;letter-spacing:-0.02em;}
   .hp.dark .clock-t{color:#EDE9E2;}
-  .clock-day{font-size:9px;font-weight:500;color:#1B7840;text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;}
-  .clock-date{font-size:9px;color:#9A9590;}
+  .clock-day{font-size:13px;font-weight:600;color:#1B7840;text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;}
+  .clock-date{font-size:13px;color:#9A9590;}
 
   /* ABOUT */
   .about{
-    background:rgba(255,255,255,0.55);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.60);
+    background:rgba(255,255,255,0.88);
+    border:1px solid rgba(14,17,23,0.08);
     border-radius:18px;padding:22px 26px;margin-bottom:28px;
     box-shadow:0 2px 16px rgba(0,0,0,0.05);
   }
-  .hp.dark .about{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
+  .hp.dark .about{background:rgba(28,31,39,0.18);border-color:rgba(255,255,255,0.07);}
   .about-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
   .about-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#E05C1A,#C48A14);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .about-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
-  .about-tag{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#E05C1A;}
-  .about-h{font-size:15px;font-weight:500;color:#0E1117;}
+  .about-tag{font-size:13px;letter-spacing:0.16em;text-transform:uppercase;color:#E05C1A;}
+  .about-h{font-size:20px;font-weight:500;color:#0E1117;}
   .hp.dark .about-h{color:#EDE9E2;}
-  .about-text{font-size:12px;line-height:1.85;color:#6B6760;}
+  .about-text{font-size:16px;line-height:1.85;color:#6B6760;}
   .hp.dark .about-text{color:#9A9590;}
   .about-pills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
-  .about-pill{font-size:9px;padding:3px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:rgba(255,255,255,0.35);}
-  .hp.dark .about-pill{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.15);}
+  .about-pill{font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:transparent;}
+  .hp.dark .about-pill{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.08);}
 
   /* SECTION LABEL */
-  .sec-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#9A9590;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .sec-lbl{font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:#9A9590;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
   .sec-lbl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,0.10);}
   .hp.dark .sec-lbl::after{background:rgba(255,255,255,0.10);}
 
-  /* ── CARDS — glass, spaced, blended ── */
+  /* ── CARDS ── */
   .cards{display:flex;flex-direction:column;gap:16px;}
 
   .card{
     display:flex;
-    background:rgba(255,255,255,0.55);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.60);
+    background:rgba(255,255,255,0.9);
+    border:1px solid rgba(14,17,23,0.08);
     border-radius:16px;
     overflow:hidden;
     transition:background 0.22s, box-shadow 0.22s;
     text-decoration:none;color:inherit;
     box-shadow:0 2px 12px rgba(0,0,0,0.05);
   }
-  .hp.dark .card{background:rgba(28,31,39,0.55);border-color:rgba(255,255,255,0.07);}
-  .card:hover{background:rgba(255,255,255,0.78);box-shadow:0 6px 28px rgba(0,0,0,0.10);}
-  .hp.dark .card:hover{background:rgba(28,31,39,0.78);}
+  .hp.dark .card{background:rgba(28,31,39,0.18);border-color:rgba(255,255,255,0.07);}
+  .card:hover{background:#fff;box-shadow:0 6px 28px rgba(0,0,0,0.10);}
+  .hp.dark .card:hover{background:rgba(28,31,39,0.24);}
 
   .card-bar{width:4px;flex-shrink:0;}
 
@@ -159,23 +174,23 @@
   .card-img-overlay{position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,0.08));z-index:1;}
 
   .card-body{flex:1;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;}
-  .card-title{font-size:17px;font-weight:500;color:#0E1117;margin-bottom:6px;line-height:1.2;}
+  .card-title{font-size:22px;font-weight:500;color:#0E1117;margin-bottom:6px;line-height:1.2;}
   .hp.dark .card-title{color:#EDE9E2;}
-  .card-desc{font-size:12px;line-height:1.75;color:#6B6760;}
+  .card-desc{font-size:16px;line-height:1.75;color:#6B6760;}
   .hp.dark .card-desc{color:#9A9590;}
   .card-tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
-  .card-tag{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:rgba(255,255,255,0.35);}
-  .hp.dark .card-tag{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.15);}
+  .card-tag{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.09);color:#9A9590;background:transparent;}
+  .hp.dark .card-tag{border-color:rgba(255,255,255,0.08);color:#6B6760;background:rgba(0,0,0,0.08);}
 
   .card-arrow{flex-shrink:0;display:flex;align-items:center;padding:0 20px;}
-  .arrow-circle{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:#C8C4BC;font-size:14px;transition:all 0.22s;}
+  .arrow-circle{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:#C8C4BC;font-size:18px;transition:all 0.22s;}
   .hp.dark .arrow-circle{border-color:rgba(255,255,255,0.1);color:#444441;}
   .card:hover .arrow-circle{border-color:var(--ac,#E05C1A);color:var(--ac,#E05C1A);transform:translateX(3px);}
 
   /* FOOTER */
   .ft{margin-top:22px;border-top:1px solid rgba(0,0,0,0.08);padding-top:14px;text-align:center;}
   .hp.dark .ft{border-color:rgba(255,255,255,0.08);}
-  .ft-text{font-size:10px;color:#9A9590;letter-spacing:0.06em;}
+  .ft-text{font-size:14px;color:#9A9590;letter-spacing:0.06em;}
   .ft-pips{display:flex;gap:5px;justify-content:center;margin-top:6px;}
   .pip{width:7px;height:7px;border-radius:50%;}
 
@@ -194,9 +209,9 @@
   @media (max-width: 600px){
     .header-wrap{padding:0 10px 8px;}
     .profile-wrap{padding:16px 0 10px;}
-    .profile-circle{width:96px;height:96px;}
+    .profile-circle{width:118px;height:118px;}
     .pg{padding:16px 12px 34px;}
-    .hero-title{font-size:22px;}
+    .hero-title{font-size:28px;}
     .about{padding:16px;}
     .about-top{align-items:flex-start;}
     .nav-sep{display:none;}
@@ -204,31 +219,32 @@
   }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#E8E4DE;">
+<body style="margin:0;padding:0;">
 
 <div class="hp" id="hp">
   <div class="tri"></div>
   <div class="header-wrap">
 
-  <!-- PROFILE CIRCLE — static/mom.jpeg should be in same folder as this HTML file -->
-  <div class="profile-wrap">
-    <div class="profile-circle">
-      <img src="static/mom.jpeg" alt="Profile Photo"/>
+    <div class="profile-wrap">
+      <div class="profile-head">
+        <div class="profile-circle">
+          <img src="static/mom.jpeg" alt="Profile Photo"/>
+        </div>
+        <div class="profile-title">POSHAN ABHIYAN</div>
+      </div>
     </div>
-  </div>
 
-  <div class="nav">
-    <div class="nav-left">
-      <div class="nav-flag"><div class="nf1"></div><div class="nf2"></div><div class="nf3"></div></div>
-      <span class="nav-brand">POSHAN ABHIYAN</span>
-      <div class="nav-sep"></div>
-      <span class="nav-sub">Anganwadi Management</span>
+    <div class="nav">
+      <div class="nav-left">
+        <div class="nav-flag"><div class="nf1"></div><div class="nf2"></div><div class="nf3"></div></div>
+        <div class="nav-sep"></div>
+        <span class="nav-sub">Anganwadi Management</span>
+      </div>
+      <div class="nav-right">
+        <span class="nav-badge" id="navUser">Welcome</span>
+        <button id="logoutBtn" onclick="poshanLogout()" style="font-family:sans-serif;font-size:13px;font-weight:700;padding:5px 14px;border-radius:999px;background:rgba(224,92,26,0.12);color:#E05C1A;border:1px solid rgba(224,92,26,0.25);cursor:pointer;transition:background 0.2s,color 0.2s;">Logout</button>
+      </div>
     </div>
-    <div class="nav-right">
-      <span class="nav-badge">Welcome, Admin</span>
-      <button class="nav-btn" onclick="toggleTheme()">&#9788; Theme</button>
-    </div>
-  </div>
   </div>
 
   <div class="pg">
@@ -380,8 +396,26 @@
   </div>
 </div>
 
+<script src="js/shared/authGuard.js"></script>
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script>
+  // Display logged-in username
+  (function showUser() {
+    try {
+      const session = JSON.parse(sessionStorage.getItem('poshanSession') || '{}');
+      const el = document.getElementById('navUser');
+      if (session.username && el) {
+        el.textContent = 'Welcome, ' + session.username.charAt(0).toUpperCase() + session.username.slice(1);
+      }
+    } catch(_) {}
+  })();
+
+  // Logout
+  function poshanLogout() {
+    sessionStorage.removeItem('poshanSession');
+    window.location.href = 'login.html';
+  }
+
   function updateClock(){
     const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0');
     const ap=h>=12?'PM':'AM',h12=h%12||12;
@@ -392,10 +426,7 @@
     document.getElementById('cDt').textContent=now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
   }
   updateClock(); setInterval(updateClock,1000);
-
-  function toggleTheme(){ document.getElementById('hp').classList.toggle('dark'); }
 </script>
 
 </body>
 </html>
-

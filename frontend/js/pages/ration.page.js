@@ -183,10 +183,27 @@ async function submitDistribution(type) {
         });
         showToast(`${type} Distribution recorded!`);
         document.getElementById(`${prefix}-qty`).value = "";
-        document.getElementById(`${prefix}-target`).value = "";
+        document.getElementById(`${prefix}-target`).value = type === "PW" ? "PW" : "";
         document.getElementById(`${prefix}-remarks`).value = "";
         loadInventory();
     } catch (e) { showToast(e.message); }
+}
+
+async function submitAutoStudentDist() {
+    const date = document.getElementById("stu-auto-date").value;
+    const eggs_count = document.getElementById("stu-auto-eggs") ? document.getElementById("stu-auto-eggs").value : 0;
+    if (!date) return showToast("Please select a distribution date!");
+
+    try {
+        const res = await apiRequest("/ration/auto-distribute-students", {
+            method: "POST",
+            body: JSON.stringify({ date, eggs_count: parseFloat(eggs_count || 0) })
+        });
+        showToast(res.message);
+        loadInventory();
+    } catch (e) {
+        showToast(e.message);
+    }
 }
 
 async function loadHistory() {
@@ -231,6 +248,53 @@ async function loadHistory() {
     } catch (e) { console.error("Load history error:", e); }
 }
 
+async function exportHistoryToExcel() {
+    const type = document.getElementById("history-type").value;
+    try {
+        const history = await apiRequest(`/ration/history/${type}`);
+        if (!history || history.length === 0) return showToast("No records found to export!");
+
+        let tableHtml = "<table><thead><tr>";
+        let headers = [];
+        if (type === "additions") {
+            headers = ["Date", "Item", "Quantity", "Supplier"];
+        } else if (type === "adjustments") {
+            headers = ["Date", "Item", "Quantity Reduced", "Reason"];
+        } else {
+            headers = ["Date", "Beneficiary ID", "Item", "Quantity", "Remarks"];
+        }
+
+        headers.forEach(h => tableHtml += `<th style='background:#f1f5f9; font-weight:bold;'>${h}</th>`);
+        tableHtml += "</tr></thead><tbody>";
+
+        history.forEach(h => {
+            tableHtml += "<tr>";
+            if (type === "additions") {
+                tableHtml += `<td>${new Date(h.created_at).toLocaleDateString()}</td><td>${h.item_name}</td><td>${h.quantity}</td><td>${h.supplier}</td>`;
+            } else if (type === "adjustments") {
+                tableHtml += `<td>${new Date(h.created_at).toLocaleDateString()}</td><td>${h.item_name}</td><td>${h.quantity}</td><td>${h.reason}</td>`;
+            } else {
+                tableHtml += `<td>${new Date(h.created_at).toLocaleDateString()}</td><td>${h.pw_id || h.student_id}</td><td>${h.item_name}</td><td>${h.quantity}</td><td>${h.remarks || ""}</td>`;
+            }
+            tableHtml += "</tr>";
+        });
+        tableHtml += "</tbody></table>";
+
+        const blob = new Blob([tableHtml], { type: "application/vnd.ms-excel" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `ration_history_${type}_${new Date().toISOString().split('T')[0]}.xls`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast("Excel report generated successfully!");
+    } catch (e) {
+        showToast("Failed to generate report.");
+    }
+}
+
 // Event Listeners
 window.addEventListener('tabChanged', (e) => {
     if (e.detail === 'dashboard') loadInventory();
@@ -241,11 +305,30 @@ window.addEventListener('tabChanged', (e) => {
 document.addEventListener("DOMContentLoaded", () => {
     loadItems();
     loadInventory();
-    const dateInput = document.getElementById("si-date");
-    if (dateInput) dateInput.valueAsDate = new Date();
+    
+    // Set default dates
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById("si-date")) document.getElementById("si-date").value = today;
+    if (document.getElementById("stu-auto-date")) document.getElementById("stu-auto-date").value = today;
+
+    // PW ID Prefix Persistence
+    const pwIdInput = document.getElementById("pw-dist-target");
+    if (pwIdInput) {
+        pwIdInput.addEventListener("input", function() {
+            let val = this.value.toUpperCase();
+            if (!val.startsWith("PW")) {
+                val = "PW" + val.replace(/[^0-9]/g, "");
+            } else {
+                val = "PW" + val.substring(2).replace(/[^0-9]/g, "");
+            }
+            this.value = val;
+        });
+    }
 });
 
 // Export to window
 window.submitStockIn = submitStockIn;
 window.submitDistribution = submitDistribution;
+window.submitAutoStudentDist = submitAutoStudentDist;
 window.loadHistory = loadHistory;
+window.exportHistoryToExcel = exportHistoryToExcel;

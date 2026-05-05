@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pregnant Women - Poshan Abhiyan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -124,7 +124,7 @@
         }
 
         .form-card-title {
-            font-size: 1rem; font-weight: 800; color: var(--navy);
+            font-size: 1.12rem; font-weight: 800; color: var(--navy);
             margin-bottom: 1.3rem;
             display: flex; align-items: center; gap: 10px;
         }
@@ -177,6 +177,46 @@
         .pw-id-hint {
             font-size: 0.68rem; color: #9CA3AF; margin-top: 3px;
         }
+
+        /* PW ID prefix wrapper */
+        .id-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 10px;
+            background: #FAFAFA;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .id-wrapper:focus-within {
+            border-color: var(--green); background: var(--white);
+            box-shadow: 0 0 0 3px rgba(19,136,8,0.10);
+        }
+
+        .id-prefix {
+            padding: 9px 10px 9px 12px;
+            font-size: 0.88rem; font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            color: var(--green);
+            background: #EAF3DE;
+            border-right: 1.5px solid #E5E7EB;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .id-wrapper input {
+            border: none !important; border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            flex: 1;
+        }
+
+        .id-wrapper input:focus {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
 
         .phone-wrap {
             display: flex;
@@ -302,7 +342,7 @@
 
         .table-wrap { overflow-x: auto; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.11rem; }
 
         thead tr {
             background: linear-gradient(135deg, var(--navy) 0%, #1a3a2a 100%);
@@ -310,7 +350,7 @@
 
         thead th {
             color: rgba(255,255,255,0.85);
-            font-size: 0.68rem; font-weight: 700;
+            font-size: 0.91rem; font-weight: 700;
             letter-spacing: 0.1em; text-transform: uppercase;
             padding: 13px 12px; text-align: left; white-space: nowrap;
         }
@@ -332,6 +372,7 @@
 
         tbody td {
             padding: 10px 12px;
+            font-size: 1.09rem;
             color: #374151; vertical-align: middle;
         }
 
@@ -368,6 +409,8 @@
             margin-top: 5px;
             animation: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        .action-menu.open { display: block; }
 
         .action-menu button {
             display: flex; align-items: center; gap: 8px;
@@ -585,7 +628,7 @@
 <div class="topbar">
     <div class="topbar-left">
         <a href="home.html" class="back-btn">&#8592; Home</a>
-        <div class="topbar-title">Pregnant Women Module</div>
+        <div class="topbar-title">Pregnant Women</div>
     </div>
     <div class="topbar-right">Poshan Abhiyan</div>
 </div>
@@ -633,8 +676,10 @@
             <!-- Row 1 -->
             <div class="field">
                 <label>PW ID</label>
-                <input type="text" id="fPwId" placeholder="e.g. PW001" maxlength="10"/>
-                <div class="pw-id-hint">Must start with <strong>PW</strong> (e.g. PW001, PW002…)</div>
+                <div class="id-wrapper">
+                    <span class="id-prefix">PW</span>
+                    <input type="text" id="fPwId" placeholder="e.g. 001" inputmode="numeric" maxlength="8"/>
+                </div>
             </div>
             <div class="field">
                 <label>Full Name</label>
@@ -695,7 +740,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>PW ID</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Age</th>
                         <th>Aadhaar</th>
@@ -713,6 +758,7 @@
 
 </div>
 
+<script src="js/shared/authGuard.js"></script>
 <script type="module" src="js/shared/serverGuard.js"></script>
 <script type="module" src="js/pages/pregnant_women.page.js"></script>
 

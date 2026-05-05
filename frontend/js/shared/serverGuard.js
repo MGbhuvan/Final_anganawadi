@@ -66,3 +66,20 @@ if (window.location.port === "4000") {
   intervalId = setInterval(checkBackendHealth, CHECK_INTERVAL_MS);
   checkBackendHealth();
 }
+
+// Unregister stale service workers so frontend HTML/CSS always loads fresh.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+      }
+      console.log("Service workers cleared for fresh frontend loads");
+    } catch (err) {
+      console.error("Failed to clear service workers", err);
+    }
+  });
+}

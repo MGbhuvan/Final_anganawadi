@@ -20,7 +20,7 @@ function genderClass(g) {
 
 function buildStudentId(inputId = "fId") {
   const num = document.getElementById(inputId).value.trim();
-  return num ? "STUD" + num : "";
+  return num ? "STUD" + num.padStart(3, '0') : "";
 }
 
 function isValidAadhaar(val) {
@@ -97,7 +97,7 @@ function closeAllMenus() {
 
 window.toggleMenu = function (event, studentId) {
   event.stopPropagation();
-  const btn = event.currentTarget;
+  const btn = document.getElementById(`menuBtn_${studentId}`);
   const menu = document.getElementById(`menu_${studentId}`);
   if (!menu) return;
   const isOpen = menu.classList.contains("open");
@@ -134,7 +134,8 @@ document.addEventListener("scroll", closeAllMenus, true);
 // ── Load / Save / Delete ──────────────────────────────────────────────────────
 
 async function loadRecords() {
-  records = await apiRequest("/students");
+  const result = await apiRequest("/students");
+  records = Array.isArray(result) ? result : [];
   
   // Sort numerically based on the numeric portion of student_id (e.g., 'STUD002' -> 2)
   records.sort((a, b) => {

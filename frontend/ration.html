@@ -4,22 +4,19 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Premium Ration Management - Poshan Abhiyan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
-
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --gold:     #F5A623;
-            --saffron:  #FF6B00;
-            --green:    #138808;
-            --navy:     #0f172a;
-            --white:    #FFFFFF;
-            --glass:    rgba(255, 255, 255, 0.8);
-            --border:   rgba(255, 255, 255, 0.3);
-            --shadow:   0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --gold:    #F5A623;
+            --saffron: #FF6B00;
+            --green:   #138808;
+            --navy:    #0f172a;
+            --white:   #FFFFFF;
+            --glass:   rgba(255,255,255,0.85);
+            --border:  rgba(255,255,255,0.3);
+            --shadow:  0 8px 32px 0 rgba(31,38,135,0.07);
         }
-
         body {
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -28,91 +25,55 @@
             color: var(--navy);
             overflow-x: hidden;
         }
-
-        /* TOP BAR */
         .topbar {
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15,23,42,0.95);
             backdrop-filter: blur(10px);
-            padding: 0 2rem;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 0 2rem; height: 70px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 1000;
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
-
         .topbar-left { display: flex; align-items: center; gap: 1.5rem; }
-
         .back-btn {
             display: flex; align-items: center; gap: 8px;
             color: rgba(255,255,255,0.8); text-decoration: none;
             font-size: 0.85rem; font-weight: 600;
             padding: 8px 16px; border-radius: 12px;
             background: rgba(255,255,255,0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
         }
-
         .back-btn:hover { background: var(--saffron); color: white; transform: translateX(-5px); }
-
         .topbar-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.4rem; font-weight: 900; color: var(--white);
             letter-spacing: -0.02em;
         }
-
-        /* TRICOLOR ACCENT */
         .tricolor {
             height: 5px;
             background: linear-gradient(90deg, var(--saffron) 0%, #fff 33%, var(--green) 66%, var(--gold) 100%);
         }
-
-        /* TABS */
         .tabs-container {
-            max-width: 1100px;
-            margin: 2rem auto 0;
+            max-width: 1100px; margin: 2rem auto 0;
             padding: 0 1.5rem;
-            display: flex;
-            gap: 0.5rem;
-            position: relative;
+            display: flex; gap: 0.5rem;
         }
-
         .tab-btn {
-            padding: 14px 28px;
-            background: transparent;
-            border: none;
+            padding: 14px 28px; background: transparent; border: none;
             border-radius: 16px 16px 0 0;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 0.9rem; font-weight: 700; color: #64748b;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 10px;
             position: relative;
         }
-
         .tab-btn::after {
-            content: '';
-            position: absolute; bottom: 0; left: 50%; width: 0; height: 3px;
-            background: var(--saffron); transition: all 0.3s ease; transform: translateX(-50%);
+            content: ''; position: absolute; bottom: 0; left: 50%;
+            width: 0; height: 3px; background: var(--saffron);
+            transition: all 0.3s ease; transform: translateX(-50%);
         }
-
         .tab-btn.active { color: var(--saffron); background: var(--white); }
         .tab-btn.active::after { width: 60%; }
-
         .tab-btn:hover:not(.active) { color: var(--navy); background: rgba(255,255,255,0.5); }
-
-        /* PAGE CONTENT */
-        .page {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1.5rem 5rem;
-        }
-
+        .page { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 5rem; }
         .tab-content {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -121,178 +82,189 @@
             padding: 2.5rem;
             box-shadow: var(--shadow);
             display: none;
-            transform-origin: top;
-            animation: slideDown 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: slideDown 0.4s cubic-bezier(0.23,1,0.32,1);
         }
-
         .tab-content.active { display: block; }
-
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* INVENTORY DASHBOARD */
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .inv-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-            transition: all 0.3s ease;
+        /* INVENTORY LIST */
+        .inventory-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .inv-row {
+            background: white; border-radius: 14px;
+            padding: 1rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
             border: 1px solid #f1f5f9;
+            border-left: 5px solid var(--saffron);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: all 0.25s ease; position: relative;
         }
-
-        .inv-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
-            background: linear-gradient(to bottom, var(--saffron), var(--gold));
+        .inv-row:nth-child(even) { border-left-color: var(--gold); }
+        .inv-row:nth-child(3n)   { border-left-color: var(--green); }
+        .inv-row:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+        .inv-row-left { display: flex; align-items: center; gap: 1rem; flex: 1; }
+        .inv-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            background: linear-gradient(135deg,#fff7ed,#fef3c7);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
         }
-
-        .inv-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-
-        .inv-item-name {
-            font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
-            color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 0.5rem;
-        }
-
-        .inv-stock-container { display: flex; align-items: baseline; gap: 8px; }
-        .inv-stock { font-size: 3rem; font-weight: 800; color: var(--navy); line-height: 1; }
-        .inv-unit { font-size: 1rem; color: #64748b; font-weight: 600; }
-
-        .inv-footer {
-            margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;
-            font-size: 0.75rem; color: #94a3b8; font-weight: 500;
-        }
+        .inv-name { font-size: 0.95rem; font-weight: 700; color: var(--navy); }
+        .inv-sub  { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; font-weight: 500; }
+        .inv-row-right { display: flex; align-items: center; gap: 1.5rem; }
+        .inv-qty-block { text-align: right; }
+        .inv-qty-val  { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+        .inv-qty-unit { font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stock-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+        .stock-ok   { background: #dcfce7; color: #15803d; }
+        .stock-low  { background: #fef9c3; color: #a16207; }
+        .stock-zero { background: #fee2e2; color: #b91c1c; }
 
         /* FORMS */
         .form-container { max-width: 650px; margin: 0 auto; }
         .form-header { margin-bottom: 2.5rem; text-align: center; }
         .form-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy); }
-        .form-header p { font-size: 0.9rem; color: #64748b; margin-top: 0.5rem; }
-
+        .form-header p  { font-size: 0.9rem; color: #64748b; margin-top: 0.5rem; }
         .form-group { margin-bottom: 1.8rem; }
         .form-label {
             display: block; font-size: 0.8rem; font-weight: 700; color: #475569;
-            margin-bottom: 8px; margin-left: 4px; text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 8px; margin-left: 4px;
+            text-transform: uppercase; letter-spacing: 0.05em;
         }
-
-        .input-wrapper { position: relative; }
-
         .form-input, .form-select, .form-textarea {
             width: 100%; padding: 14px 18px;
             background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px;
             font-size: 1rem; font-family: inherit; font-weight: 500;
             color: var(--navy); transition: all 0.3s ease;
-            outline: none; -webkit-appearance: none;
+            outline: none; appearance: none; -webkit-appearance: none;
         }
-
         .form-select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: right 18px center; background-size: 18px;
-            cursor: pointer;
+            padding-right: 48px; cursor: pointer;
         }
-
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             background: white; border-color: var(--saffron);
-            box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
+            box-shadow: 0 0 0 4px rgba(255,107,0,0.1);
         }
-
+        .form-input:disabled {
+            background: #f1f5f9; color: #64748b;
+            cursor: not-allowed; opacity: 1;
+        }
         .btn-premium {
             width: 100%; padding: 18px;
             background: linear-gradient(135deg, var(--saffron) 0%, var(--gold) 100%);
             color: white; border: none; border-radius: 16px;
             font-size: 1.1rem; font-weight: 800; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 107, 0, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255,107,0,0.3);
+            transition: all 0.3s ease; font-family: inherit;
+        }
+        .btn-premium:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255,107,0,0.4); }
+        .btn-premium:active { transform: translateY(-1px); }
+        .badge {
+            padding: 4px 12px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 700;
+            background: #f1f5f9; color: #475569;
+            text-transform: none; letter-spacing: 0;
         }
 
-        .btn-premium:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255, 107, 0, 0.4); }
-        .btn-premium:active { transform: translateY(-1px); }
+        /* EGG SECTION */
+        .egg-notice {
+            border-radius: 14px; padding: 1rem 1.4rem;
+            font-size: 0.88rem; font-weight: 700;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;
+        }
+        .egg-notice.egg-day    { background:#fef9c3; border:1.5px solid #fde047; color:#854d0e; }
+        .egg-notice.no-egg-day { background:#f1f5f9; border:1.5px solid #e2e8f0; color:#64748b; }
+        .egg-input-row { display: flex; align-items: center; gap: 1rem; }
+        .egg-count-input {
+            width: 100px; padding: 14px 18px;
+            background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px;
+            font-size: 1.4rem; font-family: inherit; font-weight: 800;
+            color: var(--navy); text-align: center; outline: none;
+            transition: all 0.3s ease;
+        }
+        .egg-count-input:focus { background: white; border-color: var(--saffron); box-shadow: 0 0 0 4px rgba(255,107,0,0.1); }
+        .egg-count-input:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; opacity: 1; }
+        .egg-day-label { font-size: 0.82rem; font-weight: 700; color: #64748b; }
 
-        /* HISTORY TABLE */
+        /* HISTORY */
         .history-controls {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;
         }
-
         .table-container { border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
-        .premium-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: white; }
+        .premium-table { width: 100%; border-collapse: collapse; background: white; }
         .premium-table th {
             background: #f8fafc; padding: 16px; text-align: left;
-            font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;
+            font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;
         }
-        .premium-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; }
+        .premium-table td { padding: 14px 16px; font-size: 0.9rem; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; }
         .premium-table tr:last-child td { border-bottom: none; }
-        .premium-table tr:hover { background: #fdfcfb; }
-
-        .badge {
-            padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
-            background: #f1f5f9; color: #475569;
-        }
+        .premium-table tr:hover td { background: #fdfcfb; }
+        .empty-state { text-align: center; padding: 3rem; color: #94a3b8; font-weight: 600; }
 
         /* OPTIONS MENU */
-        .card-options {
-            position: absolute; top: 1.5rem; right: 1.5rem;
-        }
+        .card-options { position: relative; }
         .options-btn {
-            background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #94a3b8;
-            padding: 4px 8px; border-radius: 8px; transition: 0.2s;
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            color: #94a3b8; padding: 4px 8px; border-radius: 8px; transition: 0.2s;
         }
         .options-btn:hover { background: #f1f5f9; color: var(--navy); }
-
         .options-menu {
             position: absolute; right: 0; top: 100%; width: 140px;
-            background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
             border: 1px solid #f1f5f9; display: none; z-index: 100;
         }
         .options-menu.show { display: block; }
         .menu-item {
             padding: 10px 16px; font-size: 0.85rem; font-weight: 600; color: var(--navy);
             cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: 0.2s;
         }
-        .menu-item:hover { background: #f8fafc; color: var(--red); }
+        .menu-item:hover { background: #f8fafc; color: #b91c1c; }
 
         /* MODAL */
         .modal {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center;
-            z-index: 2000;
+            position: fixed; inset: 0; background: rgba(15,23,42,0.4);
+            backdrop-filter: blur(4px); display: none;
+            align-items: center; justify-content: center; z-index: 2000;
         }
         .modal.show { display: flex; }
         .modal-content {
-            background: white; border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 450px;
+            background: white; border-radius: 24px; padding: 2.5rem;
+            width: 100%; max-width: 450px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); position: relative;
         }
         .modal-close {
-            position: absolute; top: 1.5rem; right: 1.5rem; cursor: pointer; color: #94a3b8;
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            cursor: pointer; color: #94a3b8; font-size: 1.2rem;
+            background: none; border: none; font-family: inherit;
         }
 
-        /* TOAST NOTIFICATION */
+        /* TOAST */
         #toast {
             position: fixed; bottom: 30px; right: 30px;
             padding: 16px 32px; border-radius: 16px;
-            background: #0f172a; color: white;
-            font-weight: 700; box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            font-weight: 700; font-size: 0.95rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             transform: translateY(100px); opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2000;
+            transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            z-index: 3000;
         }
-
         #toast.show { transform: translateY(0); opacity: 1; }
+        #toast.success { background: #0f172a; color: white; }
+        #toast.error   { background: #b91c1c; color: white; }
 
         @media (max-width: 768px) {
             .tabs-container { flex-wrap: wrap; }
-            .tab-btn { flex: 1; padding: 10px; font-size: 0.8rem; }
+            .tab-btn { flex: 1; padding: 10px; font-size: 0.75rem; }
             .page { padding: 0 1rem 3rem; }
             .tab-content { padding: 1.5rem; }
-            .inv-stock { font-size: 2.2rem; }
+            .inv-row-right { gap: 0.75rem; }
+            .history-controls { flex-direction: column; gap: 1rem; align-items: flex-start; }
         }
     </style>
 </head>
@@ -310,60 +282,48 @@
 <div class="tricolor"></div>
 
 <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('dashboard')">📦 Inventory</button>
-    <button class="tab-btn" onclick="switchTab('stock-in')">➕ Stock In</button>
-    <button class="tab-btn" onclick="switchTab('distribute-pw')">🤰 PW Distribution</button>
-    <button class="tab-btn" onclick="switchTab('distribute-stu')">🎓 Student Distribution</button>
-    <button class="tab-btn" onclick="switchTab('history')">📜 History</button>
+    <button class="tab-btn active" onclick="switchTab('dashboard',this)">📦 Inventory</button>
+    <button class="tab-btn" onclick="switchTab('stock-in',this)">➕ Stock In</button>
+    <button class="tab-btn" onclick="switchTab('distribute-pw',this)">🤰 PW Distribution</button>
+    <button class="tab-btn" onclick="switchTab('distribute-stu',this)">🎓 Student Distribution</button>
+    <button class="tab-btn" onclick="switchTab('history',this)">📜 History</button>
 </div>
 
 <div class="page">
-    <!-- INVENTORY DASHBOARD -->
+
+    <!-- INVENTORY -->
     <div id="dashboard" class="tab-content active">
-        <div class="inventory-grid" id="inventoryGrid">
-            <!-- Dynamic Inventory Cards -->
+        <div class="inventory-list" id="inventoryList">
+            <div class="empty-state">Loading inventory…</div>
         </div>
     </div>
 
-    <!-- STOCK IN FORM -->
+    <!-- STOCK IN -->
     <div id="stock-in" class="tab-content">
         <div class="form-container">
             <div class="form-header">
                 <h2>Record New Supplies</h2>
                 <p>Register new ration arrivals to increase available inventory</p>
             </div>
-            
             <div class="form-group">
                 <label class="form-label">Ration Item</label>
-                <div class="input-wrapper">
-                    <select id="si-item" class="form-select item-select">
-                        <option value="">Loading items...</option>
-                    </select>
-                </div>
+                <select id="si-item" class="form-select" onchange="updateUnitLabel('si-item','si-unit-label')">
+                    <option value="">— Select Item —</option>
+                </select>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Quantity Arrival <span id="si-unit-label" class="badge"></span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="si-qty" class="form-input" step="0.1" placeholder="Enter amount"/>
-                </div>
+                <label class="form-label">Quantity Received &nbsp;<span id="si-unit-label" class="badge"></span></label>
+                <input type="number" id="si-qty" class="form-input" step="0.01" min="0" placeholder="Enter amount"/>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Reception Date</label>
-                <div class="input-wrapper">
-                    <input type="date" id="si-date" class="form-input"/>
-                </div>
+                <input type="date" id="si-date" class="form-input" disabled/>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Warehouse / Supplier</label>
-                <div class="input-wrapper">
-                    <input type="text" id="si-supplier" class="form-input" placeholder="e.g. Regional Govt Hub"/>
-                </div>
+                <input type="text" id="si-supplier" class="form-input" placeholder="e.g. Regional Govt Hub"/>
             </div>
-
-            <button class="btn-premium" onclick="submitStockIn()">Confirm & Update Stock</button>
+            <button class="btn-premium" onclick="submitStockIn()">Confirm &amp; Update Stock</button>
         </div>
     </div>
 
@@ -371,41 +331,28 @@
     <div id="distribute-pw" class="tab-content">
         <div class="form-container">
             <div class="form-header">
-                <h2>PW Ration Distribution</h2>
+                <h2>Ration Distribution</h2>
                 <p>Allocate stock to registered pregnant women</p>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Beneficiary ID (Pregnant Woman)</label>
-                <div class="input-wrapper">
-                    <input type="text" id="pw-dist-target" class="form-input" placeholder="e.g. PW001"/>
-                </div>
+                <label class="form-label">Beneficiary ID</label>
+                <input type="text" id="pw-dist-target" class="form-input" placeholder="e.g. PW001"/>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Item to Distribute</label>
-                <div class="input-wrapper">
-                    <select id="pw-dist-item" class="form-select item-select">
-                        <option value="">Loading items...</option>
-                    </select>
-                </div>
+                <select id="pw-dist-item" class="form-select" onchange="updateUnitLabel('pw-dist-item','pw-dist-unit-label')">
+                    <option value="">— Select Item —</option>
+                </select>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Distribution Amount <span id="pw-dist-unit-label" class="badge"></span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="pw-dist-qty" class="form-input" step="0.1" placeholder="Enter quantity"/>
-                </div>
+                <label class="form-label">Distribution Amount &nbsp;<span id="pw-dist-unit-label" class="badge"></span></label>
+                <input type="number" id="pw-dist-qty" class="form-input" step="0.01" min="0" placeholder="Enter quantity"/>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Official Remarks</label>
-                <div class="input-wrapper">
-                    <textarea id="pw-dist-remarks" class="form-textarea" rows="2" placeholder="Notes..."></textarea>
-                </div>
+                <textarea id="pw-dist-remarks" class="form-textarea" rows="2" placeholder="Notes…"></textarea>
             </div>
-
-            <button class="btn-premium" onclick="submitDistribution('PW')">Authorize PW Distribution</button>
+            <button class="btn-premium" onclick="submitDistribution()">Authorize PW Distribution</button>
         </div>
     </div>
 
@@ -413,57 +360,56 @@
     <div id="distribute-stu" class="tab-content">
         <div class="form-container">
             <div class="form-header">
-                <h2>Student Ration Distribution</h2>
-                <p>Allocate Milk and Millet Laddu to students</p>
+                <h2>Automated Ration</h2>
+                <p>Distribute fixed daily rations to all students marked "Present"</p>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Beneficiary ID (Student)</label>
-                <div class="input-wrapper">
-                    <input type="text" id="stu-dist-target" class="form-input" placeholder="e.g. STU001"/>
+                <label class="form-label">Distribution Date</label>
+                <input type="date" id="stu-auto-date" class="form-input" disabled/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Number of Students Present</label>
+                <input type="number" id="stu-count" class="form-input" min="1" step="1" placeholder="Enter student count"/>
+            </div>
+            <div class="form-group" id="eggSection">
+                <label class="form-label">🥚 Eggs Per Student</label>
+                <div class="egg-notice" id="eggNotice"></div>
+                <div class="egg-input-row">
+                    <input type="number" id="stu-auto-eggs" class="egg-count-input" min="0" step="1" value="0" inputmode="numeric"/>
+                    <span class="egg-day-label">eggs per student<br><small style="font-weight:500;color:#94a3b8;">Egg days: Tuesday &amp; Friday only</small></span>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Item to Distribute</label>
-                <div class="input-wrapper">
-                    <select id="stu-dist-item" class="form-select item-select-student">
-                        <option value="">Loading items...</option>
-                    </select>
-                </div>
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+                <h4 style="font-size:0.9rem;color:#0369a1;margin-bottom:10px;">ℹ️ Daily Allocation Per Student</h4>
+                <ul style="font-size:0.85rem;color:#0c4a6e;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <li>• Rice: 54.9g</li><li>• Toor Dal: 3.6g</li>
+                    <li>• Salt: 2.1g</li><li>• Oil: 2.3g</li>
+                    <li>• Soya Chunks: 4g</li><li>• Sambar Powder: 2.8g</li>
+                    <li>• Spices: 0.3g</li><li>• Chana Dal: 1.57g</li>
+                    <li>• Jaggery: 2.93g</li><li>• Millet Laddu: 33.33g</li>
+                    <li>• Milk Powder: 10g</li><li>• Sugar: 3.33g</li>
+                </ul>
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Distribution Amount <span id="stu-dist-unit-label" class="badge"></span></label>
-                <div class="input-wrapper">
-                    <input type="number" id="stu-dist-qty" class="form-input" step="0.1" placeholder="Enter quantity"/>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Official Remarks</label>
-                <div class="input-wrapper">
-                    <textarea id="stu-dist-remarks" class="form-textarea" rows="2" placeholder="Notes..."></textarea>
-                </div>
-            </div>
-
-            <button class="btn-premium" onclick="submitDistribution('STUDENT')">Authorize Student Distribution</button>
+            <button class="btn-premium" onclick="submitAutoStudentDist()">Execute Auto-Distribution</button>
         </div>
     </div>
 
-    <!-- TRANSACTION HISTORY -->
+    <!-- HISTORY -->
     <div id="history" class="tab-content">
         <div class="history-controls">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.4rem;">Activity Logs</h2>
-            <div style="width: 220px;">
-                <select id="history-type" class="form-select" style="padding: 10px 14px;" onchange="loadHistory()">
+            <h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;">Activity Logs</h2>
+            <div style="display:flex;gap:1rem;align-items:center;">
+                <select id="history-type" class="form-select" style="padding:10px 14px;width:220px;" onchange="renderHistory()">
                     <option value="additions">Stock Additions</option>
                     <option value="pw">PW Distributions</option>
                     <option value="students">Student Distributions</option>
+                    <option value="adjustments">Stock Adjustments</option>
                 </select>
+                <button class="btn-premium" style="padding:10px 20px;font-size:0.85rem;width:auto;background:var(--green);box-shadow:0 4px 12px rgba(19,136,8,0.2);" onclick="exportHistory()">
+                    ⬇️ Export CSV
+                </button>
             </div>
         </div>
-
         <div class="table-container">
             <table class="premium-table">
                 <thead id="history-head"></thead>
@@ -473,17 +419,18 @@
     </div>
 </div>
 
+<!-- REDUCE MODAL -->
 <div id="reduceModal" class="modal">
     <div class="modal-content">
-        <div class="modal-close" onclick="closeReduceModal()">✕</div>
+        <button class="modal-close" onclick="closeReduceModal()">✕</button>
         <div class="form-header">
-            <h2 id="reduceModalTitle">Reduce Stock</h2>
+            <h2>Reduce Stock</h2>
             <p id="reduceModalSub">Decrease current inventory manually</p>
         </div>
         <input type="hidden" id="reduce-item-id"/>
         <div class="form-group">
-            <label class="form-label">Amount to Subtract <span id="reduce-unit-label" class="badge"></span></label>
-            <input type="number" id="reduce-qty" class="form-input" step="0.1" placeholder="Enter quantity"/>
+            <label class="form-label">Amount to Subtract &nbsp;<span id="reduce-unit-label" class="badge"></span></label>
+            <input type="number" id="reduce-qty" class="form-input" step="0.01" min="0" placeholder="Enter quantity"/>
         </div>
         <div class="form-group">
             <label class="form-label">Reason / Correction Note</label>
@@ -495,38 +442,488 @@
 
 <div id="toast"></div>
 
-<script type="module" src="js/shared/serverGuard.js"></script>
-<script src="js/pages/ration.page.js"></script>
-
+<script src="js/shared/authGuard.js"></script>
 <script>
-    // Tab switching with animation support
-    window.switchTab = (tabId) => {
-        const btns = document.querySelectorAll('.tab-btn');
-        const contents = document.querySelectorAll('.tab-content');
-        
-        btns.forEach(b => b.classList.remove('active'));
-        contents.forEach(c => c.classList.remove('active'));
-        
-        event.currentTarget.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-        
-        window.dispatchEvent(new CustomEvent('tabChanged', { detail: tabId }));
-    };
+/* ═══════════════════════════════════════════════════════
+   DATA STORE — all persistence via localStorage
+   ═══════════════════════════════════════════════════════ */
 
-    window.toggleDistTarget = () => {
-        const type = document.getElementById('dist-type').value;
-        const label = document.getElementById('target-label');
-        const input = document.getElementById('dist-target');
-        
-        if (type === 'PW') {
-            label.textContent = 'Beneficiary ID (Pregnant Woman)';
-            input.placeholder = 'e.g. PW001';
-        } else {
-            label.textContent = 'Beneficiary ID (Student)';
-            input.placeholder = 'e.g. STU001';
+// ── Master item catalogue ──
+const ITEMS = [
+    { id: 'rice',         name: 'Rice',          unit: 'g',   icon: '🌾' },
+    { id: 'toor_dal',     name: 'Toor Dal',       unit: 'g',   icon: '🫘' },
+    { id: 'salt',         name: 'Salt',           unit: 'g',   icon: '🧂' },
+    { id: 'oil',          name: 'Oil',            unit: 'ml',  icon: '🫙' },
+    { id: 'soya_chunks',  name: 'Soya Chunks',    unit: 'g',   icon: '🟤' },
+    { id: 'sambar_pwd',   name: 'Sambar Powder',  unit: 'g',   icon: '🍛' },
+    { id: 'spices',       name: 'Spices',         unit: 'g',   icon: '🌶️' },
+    { id: 'chana_dal',    name: 'Chana Dal',      unit: 'g',   icon: '🫘' },
+    { id: 'jaggery',      name: 'Jaggery',        unit: 'g',   icon: '🍯' },
+    { id: 'millet_laddu', name: 'Millet Laddu',   unit: 'g',   icon: '🌾' },
+    { id: 'milk_powder',  name: 'Milk Powder',    unit: 'g',   icon: '🥛' },
+    { id: 'sugar',        name: 'Sugar',          unit: 'g',   icon: '🍬' },
+    { id: 'eggs',         name: 'Eggs',           unit: 'pcs', icon: '🥚' },
+];
+
+// Per-student daily allocation (grams / ml / pcs)
+const PER_STUDENT = {
+    rice: 54.9, toor_dal: 3.6, salt: 2.1, oil: 2.3,
+    soya_chunks: 4, sambar_pwd: 2.8, spices: 0.3,
+    chana_dal: 1.57, jaggery: 2.93, millet_laddu: 33.33,
+    milk_powder: 10, sugar: 3.33
+    // eggs handled separately
+};
+
+// Get user-scoped storage key prefix
+function getUserPrefix() {
+    try {
+        const session = JSON.parse(sessionStorage.getItem('poshanSession') || '{}');
+        return session.user_id ? `u${session.user_id}_` : '';
+    } catch(_) { return ''; }
+}
+
+const STORAGE_KEYS = {
+    inventory:   getUserPrefix() + 'rms_inventory',
+    additions:   getUserPrefix() + 'rms_additions',
+    pw:          getUserPrefix() + 'rms_pw',
+    students:    getUserPrefix() + 'rms_students',
+    adjustments: getUserPrefix() + 'rms_adjustments',
+};
+
+function loadInventory() {
+    const raw = localStorage.getItem(STORAGE_KEYS.inventory);
+    if (raw) return JSON.parse(raw);
+    // Seed with zero stock
+    const inv = {};
+    ITEMS.forEach(it => inv[it.id] = 0);
+    saveInventory(inv);
+    return inv;
+}
+
+function saveInventory(inv) {
+    localStorage.setItem(STORAGE_KEYS.inventory, JSON.stringify(inv));
+}
+
+function loadLog(key) {
+    const raw = localStorage.getItem(STORAGE_KEYS[key]);
+    return raw ? JSON.parse(raw) : [];
+}
+
+function appendLog(key, entry) {
+    const log = loadLog(key);
+    log.unshift(entry); // newest first
+    localStorage.setItem(STORAGE_KEYS[key], JSON.stringify(log));
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════ */
+
+function todayISO() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function fmt(n) {
+    return Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+}
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.className = '', 3000);
+}
+
+function getItem(id) { return ITEMS.find(i => i.id === id); }
+
+/* ═══════════════════════════════════════════════════════
+   POPULATE DROPDOWNS
+   ═══════════════════════════════════════════════════════ */
+
+function populateSelects() {
+    const opts = ITEMS.map(it => `<option value="${it.id}">${it.icon} ${it.name}</option>`).join('');
+    ['si-item', 'pw-dist-item'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<option value="">— Select Item —</option>' + opts;
+    });
+}
+
+function updateUnitLabel(selectId, labelId) {
+    const val = document.getElementById(selectId).value;
+    const label = document.getElementById(labelId);
+    if (!label) return;
+    const item = getItem(val);
+    label.textContent = item ? item.unit : '';
+}
+
+/* ═══════════════════════════════════════════════════════
+   INVENTORY RENDER
+   ═══════════════════════════════════════════════════════ */
+
+function renderInventory() {
+    const inv = loadInventory();
+    const container = document.getElementById('inventoryList');
+
+    container.innerHTML = ITEMS.map((item, i) => {
+        const stock = inv[item.id] || 0;
+        const pillClass = stock <= 0 ? 'stock-zero' : stock < 500 ? 'stock-low' : 'stock-ok';
+        const pillLabel = stock <= 0 ? 'Out of Stock' : stock < 500 ? 'Low Stock' : 'In Stock';
+        return `
+        <div class="inv-row" id="inv-row-${item.id}">
+            <div class="inv-row-left">
+                <div class="inv-icon">${item.icon}</div>
+                <div>
+                    <div class="inv-name">${item.name}</div>
+                    <div class="inv-sub">Item #${String(i+1).padStart(2,'0')} · ${item.unit}</div>
+                </div>
+            </div>
+            <div class="inv-row-right">
+                <span class="stock-pill ${pillClass}">${pillLabel}</span>
+                <div class="inv-qty-block">
+                    <div class="inv-qty-val">${fmt(stock)}</div>
+                    <div class="inv-qty-unit">${item.unit}</div>
+                </div>
+                <div class="card-options">
+                    <button class="options-btn" onclick="toggleOptions(event,'opts-${item.id}')">⋮</button>
+                    <div class="options-menu" id="opts-${item.id}">
+                        <div class="menu-item" onclick="openReduceModal('${item.id}','${item.name}','${item.unit}')">✂️ Reduce</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   STOCK IN
+   ═══════════════════════════════════════════════════════ */
+
+function submitStockIn() {
+    const itemId   = document.getElementById('si-item').value;
+    const qtyRaw   = document.getElementById('si-qty').value;
+    const supplier = document.getElementById('si-supplier').value.trim();
+
+    if (!itemId)            return showToast('Please select an item.', 'error');
+    const qty = parseFloat(qtyRaw);
+    if (!qty || qty <= 0)   return showToast('Enter a valid quantity.', 'error');
+
+    // Update inventory
+    const inv = loadInventory();
+    inv[itemId] = (inv[itemId] || 0) + qty;
+    saveInventory(inv);
+
+    // Log the addition
+    const item = getItem(itemId);
+    appendLog('additions', {
+        date:     todayISO(),
+        item:     item.name,
+        qty:      qty,
+        unit:     item.unit,
+        supplier: supplier || '—',
+        ts:       Date.now(),
+    });
+
+    showToast(`✅ Added ${fmt(qty)} ${item.unit} of ${item.name} to inventory`);
+
+    // Reset form
+    document.getElementById('si-item').value     = '';
+    document.getElementById('si-qty').value      = '';
+    document.getElementById('si-supplier').value = '';
+    document.getElementById('si-unit-label').textContent = '';
+
+    // Refresh inventory tab in background
+    renderInventory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   PW DISTRIBUTION
+   ═══════════════════════════════════════════════════════ */
+
+function submitDistribution() {
+    const target  = document.getElementById('pw-dist-target').value.trim();
+    const itemId  = document.getElementById('pw-dist-item').value;
+    const qtyRaw  = document.getElementById('pw-dist-qty').value;
+    const remarks = document.getElementById('pw-dist-remarks').value.trim();
+
+    if (!target)          return showToast('Enter a Beneficiary ID.', 'error');
+    if (!itemId)          return showToast('Select an item.', 'error');
+    const qty = parseFloat(qtyRaw);
+    if (!qty || qty <= 0) return showToast('Enter a valid quantity.', 'error');
+
+    const inv = loadInventory();
+    const available = inv[itemId] || 0;
+    if (qty > available) {
+        const item = getItem(itemId);
+        return showToast(`❌ Insufficient stock! Available: ${fmt(available)} ${item.unit}`, 'error');
+    }
+
+    // Deduct
+    inv[itemId] -= qty;
+    saveInventory(inv);
+
+    const item = getItem(itemId);
+    appendLog('pw', {
+        date:        todayISO(),
+        beneficiary: target,
+        item:        item.name,
+        qty:         qty,
+        unit:        item.unit,
+        remarks:     remarks || '—',
+        ts:          Date.now(),
+    });
+
+    showToast(`✅ Distributed ${fmt(qty)} ${item.unit} of ${item.name} to ${target}`);
+    document.getElementById('pw-dist-target').value  = '';
+    document.getElementById('pw-dist-item').value    = '';
+    document.getElementById('pw-dist-qty').value     = '';
+    document.getElementById('pw-dist-remarks').value = '';
+    document.getElementById('pw-dist-unit-label').textContent = '';
+    renderInventory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   AUTO STUDENT DISTRIBUTION
+   ═══════════════════════════════════════════════════════ */
+
+function submitAutoStudentDist() {
+    const stuCount = parseInt(document.getElementById('stu-count').value);
+    const eggs     = parseInt(document.getElementById('stu-auto-eggs').value) || 0;
+    const date     = document.getElementById('stu-auto-date').value;
+
+    if (!stuCount || stuCount < 1) return showToast('Enter the number of present students.', 'error');
+
+    const inv = loadInventory();
+    const deductions = {};
+    let errorItem = null;
+
+    // Check all items first
+    for (const [id, perStu] of Object.entries(PER_STUDENT)) {
+        const needed = perStu * stuCount;
+        if ((inv[id] || 0) < needed) {
+            const item = getItem(id);
+            errorItem = `${item.name}: need ${fmt(needed)} ${item.unit}, have ${fmt(inv[id] || 0)}`;
+            break;
         }
-    };
-</script>
+        deductions[id] = needed;
+    }
 
+    if (errorItem) return showToast(`❌ Insufficient stock — ${errorItem}`, 'error');
+
+    if (eggs > 0) {
+        const eggNeeded = eggs * stuCount;
+        if ((inv['eggs'] || 0) < eggNeeded) {
+            return showToast(`❌ Not enough eggs! Need ${eggNeeded}, have ${fmt(inv['eggs'] || 0)}`, 'error');
+        }
+        deductions['eggs'] = eggNeeded;
+    }
+
+    // Apply all deductions
+    for (const [id, amount] of Object.entries(deductions)) {
+        inv[id] = (inv[id] || 0) - amount;
+    }
+    saveInventory(inv);
+
+    appendLog('students', {
+        date:     date,
+        students: stuCount,
+        eggs:     eggs,
+        items:    Object.entries(deductions).map(([id, amt]) => {
+                      const it = getItem(id);
+                      return `${it.name}: ${fmt(amt)} ${it.unit}`;
+                  }).join(', '),
+        ts:       Date.now(),
+    });
+
+    showToast(`✅ Distributed rations to ${stuCount} students`);
+    document.getElementById('stu-count').value = '';
+    renderInventory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   REDUCE / ADJUST MODAL
+   ═══════════════════════════════════════════════════════ */
+
+function openReduceModal(itemId, name, unit) {
+    document.getElementById('reduce-item-id').value = itemId;
+    document.getElementById('reduceModalSub').textContent = `Reducing: ${name}`;
+    document.getElementById('reduce-unit-label').textContent = unit;
+    document.getElementById('reduce-qty').value    = '';
+    document.getElementById('reduce-reason').value = '';
+    document.getElementById('reduceModal').classList.add('show');
+    // Close options menu
+    document.querySelectorAll('.options-menu').forEach(m => m.classList.remove('show'));
+}
+
+function closeReduceModal() {
+    document.getElementById('reduceModal').classList.remove('show');
+}
+
+function submitReduction() {
+    const itemId = document.getElementById('reduce-item-id').value;
+    const qty    = parseFloat(document.getElementById('reduce-qty').value);
+    const reason = document.getElementById('reduce-reason').value.trim();
+
+    if (!qty || qty <= 0) return showToast('Enter a valid amount.', 'error');
+
+    const inv = loadInventory();
+    const current = inv[itemId] || 0;
+    if (qty > current) return showToast(`❌ Cannot reduce by more than current stock (${fmt(current)}).`, 'error');
+
+    inv[itemId] -= qty;
+    saveInventory(inv);
+
+    const item = getItem(itemId);
+    appendLog('adjustments', {
+        date:   todayISO(),
+        item:   item.name,
+        qty:    -qty,
+        unit:   item.unit,
+        reason: reason || '—',
+        ts:     Date.now(),
+    });
+
+    showToast(`✅ Reduced ${item.name} by ${fmt(qty)} ${item.unit}`);
+    closeReduceModal();
+    renderInventory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   HISTORY RENDER
+   ═══════════════════════════════════════════════════════ */
+
+const HISTORY_SCHEMA = {
+    additions: {
+        headers: ['Date', 'Item', 'Qty Added', 'Supplier'],
+        row: r => `<td>${r.date}</td><td>${r.item}</td><td>${fmt(r.qty)} ${r.unit}</td><td>${r.supplier}</td>`
+    },
+    pw: {
+        headers: ['Date', 'Beneficiary', 'Item', 'Qty', 'Remarks'],
+        row: r => `<td>${r.date}</td><td>${r.beneficiary}</td><td>${r.item}</td><td>${fmt(r.qty)} ${r.unit}</td><td>${r.remarks}</td>`
+    },
+    students: {
+        headers: ['Date', 'Students', 'Eggs/Student', 'Items Distributed'],
+        row: r => `<td>${r.date}</td><td>${r.students}</td><td>${r.eggs}</td><td style="font-size:0.8rem;max-width:400px;word-break:break-word">${r.items}</td>`
+    },
+    adjustments: {
+        headers: ['Date', 'Item', 'Change', 'Reason'],
+        row: r => `<td>${r.date}</td><td>${r.item}</td><td style="color:${r.qty<0?'#b91c1c':'#15803d'}">${r.qty>0?'+':''}${fmt(r.qty)} ${r.unit}</td><td>${r.reason}</td>`
+    },
+};
+
+function renderHistory() {
+    const type   = document.getElementById('history-type').value;
+    const schema = HISTORY_SCHEMA[type];
+    const log    = loadLog(type);
+
+    document.getElementById('history-head').innerHTML =
+        `<tr>${schema.headers.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+
+    document.getElementById('history-body').innerHTML = log.length
+        ? log.map(r => `<tr>${schema.row(r)}</tr>`).join('')
+        : `<tr><td colspan="${schema.headers.length}" class="empty-state">No records yet.</td></tr>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXPORT CSV
+   ═══════════════════════════════════════════════════════ */
+
+function exportHistory() {
+    const type   = document.getElementById('history-type').value;
+    const schema = HISTORY_SCHEMA[type];
+    const log    = loadLog(type);
+    if (!log.length) return showToast('No data to export.', 'error');
+
+    let csv = schema.headers.join(',') + '\n';
+    log.forEach(r => {
+        // Build row values manually per type
+        let vals;
+        if (type === 'additions')   vals = [r.date, r.item, `${r.qty} ${r.unit}`, r.supplier];
+        if (type === 'pw')          vals = [r.date, r.beneficiary, r.item, `${r.qty} ${r.unit}`, r.remarks];
+        if (type === 'students')    vals = [r.date, r.students, r.eggs, `"${r.items}"`];
+        if (type === 'adjustments') vals = [r.date, r.item, `${r.qty} ${r.unit}`, r.reason];
+        csv += vals.join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = `${type}_log_${todayISO()}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════
+   EGG SECTION
+   ═══════════════════════════════════════════════════════ */
+
+function isEggDay(dateStr) {
+    if (!dateStr) return false;
+    const day = new Date(dateStr + 'T00:00:00').getDay();
+    return day === 2 || day === 5;
+}
+
+function updateEggSection() {
+    const dateVal  = document.getElementById('stu-auto-date').value;
+    const eggInput = document.getElementById('stu-auto-eggs');
+    const notice   = document.getElementById('eggNotice');
+    const DAYS     = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dayName  = dateVal ? DAYS[new Date(dateVal+'T00:00:00').getDay()] : '';
+
+    if (isEggDay(dateVal)) {
+        notice.className = 'egg-notice egg-day';
+        notice.innerHTML = `🥚 <span>Today is <strong>${dayName}</strong> — Egg day! Enter eggs per student.</span>`;
+        eggInput.disabled = false;
+        if (!eggInput.value || eggInput.value === '0') eggInput.value = '1';
+    } else {
+        notice.className = 'egg-notice no-egg-day';
+        notice.innerHTML = `🚫 <span><strong>${dayName||'Today'}</strong> is not an egg day. Eggs only on <strong>Tuesdays</strong> &amp; <strong>Fridays</strong>.</span>`;
+        eggInput.disabled = true;
+        eggInput.value = '0';
+    }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB SWITCHING
+   ═══════════════════════════════════════════════════════ */
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+    if (tabId === 'dashboard') renderInventory();
+    if (tabId === 'history')   renderHistory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   OPTIONS MENU
+   ═══════════════════════════════════════════════════════ */
+
+function toggleOptions(e, menuId) {
+    e.stopPropagation();
+    document.querySelectorAll('.options-menu').forEach(m => {
+        if (m.id !== menuId) m.classList.remove('show');
+    });
+    document.getElementById(menuId)?.classList.toggle('show');
+}
+document.addEventListener('click', () => {
+    document.querySelectorAll('.options-menu').forEach(m => m.classList.remove('show'));
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const today = todayISO();
+    document.getElementById('si-date').value       = today;
+    document.getElementById('stu-auto-date').value = today;
+
+    populateSelects();
+    renderInventory();
+    updateEggSection();
+});
+</script>
 </body>
 </html>

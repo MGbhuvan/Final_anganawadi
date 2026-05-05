@@ -46,29 +46,35 @@ function maskAadhaar(aadhaar) {
 
 function toggleMenu(pwId, event) {
   event.stopPropagation();
-  const btn = event.currentTarget;
+  const btn = document.getElementById(`menuBtn_${pwId}`);
   const menu = document.getElementById(`menu_${pwId}`);
   if (!menu) return;
+
   if (openMenuPwId && openMenuPwId !== pwId) {
     const prev = document.getElementById(`menu_${openMenuPwId}`);
     if (prev) prev.classList.remove("open");
   }
-  
+
   const isOpening = !menu.classList.contains("open");
   menu.classList.toggle("open");
   openMenuPwId = isOpening ? pwId : null;
 
-  if (isOpening) {
-    // Dynamic fixed positioning
+  if (isOpening && btn) {
     const rect = btn.getBoundingClientRect();
+    const menuWidth = 150;
+
     menu.style.position = "fixed";
     menu.style.margin = "0";
-    
-    // Align right edge
-    menu.style.left = "auto";
-    menu.style.right = `${window.innerWidth - rect.right}px`;
+    menu.style.minWidth = `${menuWidth}px`;
 
-    // Pop upwards if tight on space
+    let left = rect.right - menuWidth;
+    if (left < 8) left = 8;
+    if (left + menuWidth > window.innerWidth - 8) {
+      left = window.innerWidth - menuWidth - 8;
+    }
+    menu.style.left = `${left}px`;
+    menu.style.right = "auto";
+
     const spaceBelow = window.innerHeight - rect.bottom;
     if (spaceBelow < 120) {
       menu.style.top = "auto";
@@ -91,6 +97,7 @@ document.addEventListener("click", closeAllMenus);
 document.addEventListener("scroll", closeAllMenus, true);
 
 function promptDelete(pwId) {
+  closeAllMenus();
   const target = records.find((r) => r.pw_id === pwId);
   if (!target) return;
   deleteTargetPwId = pwId;
@@ -125,7 +132,7 @@ function renderTable() {
   if (!records.length) {
     body.innerHTML = `<tr><td colspan="9">
       <div class="empty-state">
-        <div class="empty-icon">🤰</div>
+        <div class="empty-icon">No data</div>
         <p>No records yet.<br/>Fill the form above and click <strong>Save Record</strong>.</p>
       </div>
     </td></tr>`;
@@ -144,10 +151,10 @@ function renderTable() {
       <td><span class="pill ${pillClass(r.status)}">${r.status}</span></td>
       <td>${String(r.registration_date).slice(0, 10)}</td>
       <td class="action-cell">
-        <button class="menu-btn" onclick="toggleMenu('${r.pw_id}', event)" title="More options">⋮</button>
+        <button class="menu-btn" id="menuBtn_${r.pw_id}" onclick="toggleMenu('${r.pw_id}', event)" title="More options" aria-label="Open actions menu">&#8942;</button>
         <div class="action-menu" id="menu_${r.pw_id}">
-          <button class="update-opt" onclick="startEdit('${r.pw_id}')">✏️ Update</button>
-          <button class="delete-opt" onclick="promptDelete('${r.pw_id}')">🗑️ Delete</button>
+          <button class="update-opt" onclick="startEdit('${r.pw_id}')">Update</button>
+          <button class="delete-opt" onclick="promptDelete('${r.pw_id}')">Delete</button>
         </div>
       </td>
     </tr>`
@@ -156,6 +163,7 @@ function renderTable() {
 }
 
 function startEdit(pwId) {
+  closeAllMenus();
   const r = records.find((x) => x.pw_id === pwId);
   const row = document.getElementById(`row-${pwId}`);
   if (!r || !row) return;
@@ -181,7 +189,7 @@ function startEdit(pwId) {
     </td>
     <td><input class="edit-input" id="e-date-${pwId}" type="date" value="${String(r.registration_date).slice(0, 10)}" min="${DATE_MIN}" max="${DATE_MAX}" style="min-width:120px;"/></td>
     <td style="white-space:nowrap;">
-      <button class="save-row-btn" onclick="saveEdit('${pwId}')">💾 Save</button>
+      <button class="save-row-btn" onclick="saveEdit('${pwId}')">Save</button>
       <button class="cancel-row-btn" onclick="renderTable()">Cancel</button>
     </td>
   `;
@@ -252,12 +260,21 @@ async function saveEdit(pwId) {
 }
 
 async function loadRecords() {
-  records = await apiRequest("/pregnant-women");
+  const result = await apiRequest("/pregnant-women");
+  records = Array.isArray(result) ? result : [];
+
+  records.sort((a, b) => {
+    const numA = parseInt(a.pw_id.replace(/\D/g, ""), 10) || 0;
+    const numB = parseInt(b.pw_id.replace(/\D/g, ""), 10) || 0;
+    return numA - numB;
+  });
+
   renderTable();
 }
 
 async function saveRecord() {
-  const pw_id = document.getElementById("fPwId").value.trim().toUpperCase();
+  const pwNum = document.getElementById("fPwId").value.trim();
+  const pw_id = pwNum ? "PW" + pwNum.padStart(3, "0") : "";
   const name = document.getElementById("fName").value.trim();
   const age = document.getElementById("fAge").value.trim();
   const aadhaar = document.getElementById("fAadhaar").value.trim();
@@ -325,13 +342,7 @@ function clearForm() {
 }
 
 document.getElementById("fPwId").addEventListener("input", function onPwInput() {
-  let value = this.value.toUpperCase();
-  if (value.length > 0 && !value.startsWith("PW")) {
-    value = `PW${value.replace(/^P?W?/, "").replace(/\D/g, "")}`;
-  } else {
-    value = `PW${value.replace(/^PW/, "").replace(/\D/g, "")}`;
-  }
-  this.value = value;
+  this.value = this.value.replace(/\D/g, "");
 });
 
 document.getElementById("fPhone").addEventListener("input", function onPhoneInput() {
