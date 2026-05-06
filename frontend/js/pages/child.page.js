@@ -4,6 +4,20 @@ import { showFixedToast, showInlineToast } from "../shared/toast.js";
 let records = [];
 let activeMenuId = null;
 
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function setValue(id, value) {
+  const el = byId(id);
+  if (el) el.value = value;
+}
+
+function setText(id, value) {
+  const el = byId(id);
+  if (el) el.textContent = value;
+}
+
 function showToast(msg, type) {
   showInlineToast("toastMsg", msg, type, 3000);
 }
@@ -13,13 +27,21 @@ function showModalToast(msg, type) {
 }
 
 function buildChildId() {
-  const num = document.getElementById("fId").value.trim();
+  const el = byId("fId");
+  const num = el ? el.value.trim() : "";
   return num ? "CHILD" + String(num).padStart(3, '0') : "";
 }
 
 function buildMotherId(idInput) {
-  const num = document.getElementById(idInput).value.trim();
+  const el = byId(idInput);
+  const num = el ? el.value.trim() : "";
   return num ? "PW" + String(num).padStart(3, '0') : "";
+}
+
+function genderClass(gender) {
+  if (gender === "Boy") return "gp-male";
+  if (gender === "Girl") return "gp-female";
+  return "";
 }
 
 function bmiStatus(bmi) {
@@ -36,17 +58,22 @@ function vaxClass(v) {
 
 function updateStats() {
   const total = records.length;
+  const boys = records.filter((r) => r.gender === "Boy").length;
+  const girls = records.filter((r) => r.gender === "Girl").length;
   const normal = records.filter((r) => r.bmi >= 18.5 && r.bmi <= 25).length;
-  document.getElementById("sTotal").textContent = total;
-  document.getElementById("sNormal").textContent = normal;
-  document.getElementById("sAttention").textContent = total - normal;
-  document.getElementById("recBadge").textContent = `${total} record${total !== 1 ? "s" : ""}`;
+  setText("sTotal", total);
+  setText("sBoys", boys);
+  setText("sGirls", girls);
+  setText("sNormal", normal);
+  setText("sAttention", total - normal);
+  setText("recBadge", `${total} record${total !== 1 ? "s" : ""}`);
 }
 
 function renderTable() {
   const body = document.getElementById("cdBody");
+  if (!body) return;
   if (!records.length) {
-    body.innerHTML = `<tr><td colspan="8">
+    body.innerHTML = `<tr><td colspan="9">
       <div class="empty-state">
         <div class="empty-icon">No data</div>
         <p>No records yet.<br/>Fill the form above and click <strong>Save Record</strong>.</p>
@@ -61,6 +88,7 @@ function renderTable() {
       (r) => `<tr>
       <td><span class="ch-id">${r.child_code}</span></td>
       <td class="ch-name">${r.name}</td>
+      <td><span class="gender-pill ${genderClass(r.gender)}">${r.gender || "-"}</span></td>
       <td>${r.mother_id}</td>
       <td>${r.age} mo</td>
       <td>${r.weight} kg</td>
@@ -124,16 +152,18 @@ async function loadRecords() {
 
 async function saveRecord() {
   const child_code = buildChildId();
-  const name = document.getElementById("fName").value.trim();
+  const name = byId("fName")?.value.trim() || "";
+  const gender = byId("fGender")?.value || "";
   const mother_id = buildMotherId("fMid");
-  const age = document.getElementById("fAge").value;
-  const weight = document.getElementById("fWeight").value;
-  const height = document.getElementById("fHeight").value;
-  const vaccination_status = document.getElementById("fVacc").value;
+  const age = byId("fAge")?.value || "";
+  const weight = byId("fWeight")?.value || "";
+  const height = byId("fHeight")?.value || "";
+  const vaccination_status = byId("fVacc")?.value || "";
 
   const missing = [];
   if (!child_code) missing.push("Child ID");
   if (!name) missing.push("Child Name");
+  if (!gender) missing.push("Gender");
   if (!mother_id) missing.push("Mother ID");
   if (!age) missing.push("Age");
   if (!weight) missing.push("Weight");
@@ -148,7 +178,7 @@ async function saveRecord() {
   try {
     await apiRequest("/children", {
       method: "POST",
-      body: JSON.stringify({ child_code, name, mother_id, age, weight, height, vaccination_status })
+      body: JSON.stringify({ child_code, name, gender, mother_id, age, weight, height, vaccination_status })
     });
     clearForm();
     await loadRecords();
@@ -159,10 +189,12 @@ async function saveRecord() {
 }
 
 function clearForm() {
-  ["fId", "fName", "fMid", "fAge", "fWeight", "fHeight"].forEach((id) => {
-    document.getElementById(id).value = "";
+  ["fId", "fName", "fGender", "fMid", "fAge", "fWeight", "fHeight"].forEach((id) => {
+    const el = byId(id);
+    if (el) el.value = "";
   });
-  document.getElementById("fVacc").value = "";
+  const vacc = byId("fVacc");
+  if (vacc) vacc.value = "";
 }
 
 async function deleteRecord(id) {
@@ -184,32 +216,35 @@ window.openUpdate = function openUpdate(id) {
   const r = records.find((rec) => rec.child_code === id);
   if (!r) return;
 
-  document.getElementById("mId").value = r.child_code;
-  document.getElementById("mNm").value = r.name;
-  document.getElementById("mMid").value = r.mother_id ? r.mother_id.replace(/\D/g, '') : '';
-  document.getElementById("mAge").value = r.age;
-  document.getElementById("mWt").value = r.weight;
-  document.getElementById("mHt").value = r.height;
-  document.getElementById("mVacc").value = r.vaccination_status;
+  setValue("mId", r.child_code);
+  setValue("mNm", r.name);
+  setValue("mGender", r.gender || "");
+  setValue("mMid", r.mother_id ? r.mother_id.replace(/\D/g, '') : '');
+  setValue("mAge", r.age);
+  setValue("mWt", r.weight);
+  setValue("mHt", r.height);
+  setValue("mVacc", r.vaccination_status);
 
-  document.getElementById("updateModal").classList.add("open");
+  byId("updateModal")?.classList.add("open");
 };
 
 window.closeModal = function closeModal() {
-  document.getElementById("updateModal").classList.remove("open");
+  byId("updateModal")?.classList.remove("open");
 };
 
 window.submitUpdate = async function submitUpdate() {
-  const child_code = document.getElementById("mId").value;
-  const name = document.getElementById("mNm").value.trim();
+  const child_code = byId("mId")?.value || "";
+  const name = byId("mNm")?.value.trim() || "";
+  const gender = byId("mGender")?.value || "";
   const mother_id = buildMotherId("mMid");
-  const age = document.getElementById("mAge").value;
-  const weight = document.getElementById("mWt").value;
-  const height = document.getElementById("mHt").value;
-  const vaccination_status = document.getElementById("mVacc").value;
+  const age = byId("mAge")?.value || "";
+  const weight = byId("mWt")?.value || "";
+  const height = byId("mHt")?.value || "";
+  const vaccination_status = byId("mVacc")?.value || "";
 
   const missing = [];
   if (!name) missing.push("Child Name");
+  if (!gender) missing.push("Gender");
   if (!mother_id) missing.push("Mother ID");
   if (!age) missing.push("Age");
   if (!weight) missing.push("Weight");
@@ -224,7 +259,7 @@ window.submitUpdate = async function submitUpdate() {
   try {
     await apiRequest(`/children/${encodeURIComponent(child_code)}`, {
       method: "PUT",
-      body: JSON.stringify({ name, mother_id, age, weight, height, vaccination_status })
+      body: JSON.stringify({ name, gender, mother_id, age, weight, height, vaccination_status })
     });
     closeModal();
     await loadRecords();
@@ -234,19 +269,25 @@ window.submitUpdate = async function submitUpdate() {
   }
 };
 
-document.getElementById("fId").addEventListener("input", function onCreateIdInput() {
+byId("fId")?.addEventListener("input", function onCreateIdInput() {
   this.value = this.value.replace(/\D/g, "");
 });
 
-document.getElementById("fMid").addEventListener("input", function onMidInput() {
+byId("fGender")?.addEventListener("change", function onGenderChange() {
+  if (!this.value) {
+    showToast("Please select a gender.", "error");
+  }
+});
+
+byId("fMid")?.addEventListener("input", function onMidInput() {
   this.value = this.value.replace(/\D/g, "");
 });
 
-document.getElementById("mId").addEventListener("input", function onModalIdInput() {
+byId("mId")?.addEventListener("input", function onModalIdInput() {
   this.value = this.value.replace(/\D/g, "");
 });
 
-document.getElementById("mMid").addEventListener("input", function onModalMidInput() {
+byId("mMid")?.addEventListener("input", function onModalMidInput() {
   this.value = this.value.replace(/\D/g, "");
 });
 

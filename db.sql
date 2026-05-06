@@ -58,6 +58,7 @@ CREATE TABLE `children` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `child_code` varchar(64) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
+  `gender` varchar(32) NOT NULL DEFAULT 'Boy',
   `mother_id` varchar(128) NOT NULL,
   `age` int NOT NULL,
   `weight` decimal(8,2) NOT NULL,
@@ -79,7 +80,7 @@ CREATE TABLE `children` (
 
 LOCK TABLES `children` WRITE;
 /*!40000 ALTER TABLE `children` DISABLE KEYS */;
-INSERT INTO `children` VALUES (2,'CHILD001','Chintu Babu','PW001',6,3.30,67.80,7.20,'Complete','2026-04-22 13:50:52',NULL),(8,'CHILD002','Binod Khan','PW004',11,4.00,78.00,6.60,'Complete','2026-04-22 16:09:24',NULL),(9,'CHILD123','Test Child','PW999',12,10.00,80.00,15.60,'Complete','2026-05-01 06:02:49',3),(10,'CHILD1100','Sanket Hosure','PW101',12,5.10,78.00,8.40,'Complete','2026-05-03 13:53:41',4);
+INSERT INTO `children` VALUES (2,'CHILD001','Chintu Babu','Boy','PW001',6,3.30,67.80,7.20,'Complete','2026-04-22 13:50:52',NULL),(8,'CHILD002','Binod Khan','Boy','PW004',11,4.00,78.00,6.60,'Complete','2026-04-22 16:09:24',NULL),(9,'CHILD123','Test Child','Boy','PW999',12,10.00,80.00,15.60,'Complete','2026-05-01 06:02:49',3),(10,'CHILD1100','Sanket Hosure','Boy','PW101',12,5.10,78.00,8.40,'Complete','2026-05-03 13:53:41',4);
 /*!40000 ALTER TABLE `children` ENABLE KEYS */;
 UNLOCK TABLES;
 

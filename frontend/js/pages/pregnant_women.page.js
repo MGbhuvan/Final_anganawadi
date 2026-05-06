@@ -8,6 +8,21 @@ let openMenuPwId = null;
 const DATE_MIN = "2020-01-01";
 const DATE_MAX = "2026-12-31";
 
+function todayISO() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function setDefaultRegistrationDate() {
+  const dateInput = document.getElementById("fDate");
+  if (dateInput) {
+    dateInput.value = todayISO();
+  }
+}
+
 function isValidDate(dateStr) {
   if (!dateStr) return false;
   const year = parseInt(dateStr.split("-")[0], 10);
@@ -336,9 +351,11 @@ async function saveRecord() {
 
 function clearForm() {
   ["fPwId", "fName", "fAge", "fAadhaar", "fPhone", "fAddr", "fDate"].forEach((id) => {
-    document.getElementById(id).value = "";
+    const input = document.getElementById(id);
+    if (input) input.value = "";
   });
   document.getElementById("fStatus").value = "";
+  setDefaultRegistrationDate();
 }
 
 document.getElementById("fPwId").addEventListener("input", function onPwInput() {
@@ -359,6 +376,8 @@ document.getElementById("fDate").addEventListener("change", function onDateInput
     this.value = "";
   }
 });
+
+setDefaultRegistrationDate();
 
 window.toggleMenu = toggleMenu;
 window.promptDelete = promptDelete;

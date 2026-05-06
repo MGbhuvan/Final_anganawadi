@@ -292,6 +292,14 @@
         .pill-partial   { background: #FAEEDA; color: #633806; }
         .pill-notdone   { background: #FCEBEB; color: #791F1F; }
 
+        .gender-pill {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 700;
+        }
+
+        .gp-male { background: #E6F1FB; color: #0C447C; }
+        .gp-female { background: #FCEBEB; color: #A32D2D; }
+
         /* Action Menu */
         .action-cell {
             position: relative;
@@ -423,6 +431,14 @@
                 <input type="text" id="mNm"/>
             </div>
             <div class="field">
+                <label>Gender</label>
+                <select id="mGender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Boy">Boy</option>
+                    <option value="Girl">Girl</option>
+                </select>
+            </div>
+            <div class="field">
                 <label>Mother ID (PW ID)</label>
                 <div class="id-wrapper">
                     <span class="id-prefix">PW</span>
@@ -492,6 +508,14 @@
                 <input type="text" id="fName" placeholder="Enter full name"/>
             </div>
             <div class="field">
+                <label>Gender</label>
+                <select id="fGender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Boy">Boy</option>
+                    <option value="Girl">Girl</option>
+                </select>
+            </div>
+            <div class="field">
                 <label>Mother ID (PW ID)</label>
                 <div class="id-wrapper">
                     <span class="id-prefix">PW</span>
@@ -533,7 +557,11 @@
     <div class="table-card">
         <div class="table-toolbar">
             <div class="table-toolbar-title">All Records</div>
-            <span class="rec-badge" id="recBadge">0 records</span>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end;align-items:center;">
+                <span class="rec-badge">Boys: <strong id="sBoys">0</strong></span>
+                <span class="rec-badge">Girls: <strong id="sGirls">0</strong></span>
+                <span class="rec-badge" id="recBadge">0 records</span>
+            </div>
         </div>
         <div class="table-wrap">
             <table>
@@ -541,6 +569,7 @@
                     <tr>
                         <th>Child ID</th>
                         <th>Name</th>
+                        <th>Gender</th>
                         <th>Mother ID</th>
                         <th>Age</th>
                         <th>Weight</th>
